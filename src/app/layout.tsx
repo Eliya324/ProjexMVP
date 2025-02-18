@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import Navbar from "@/components/ui/Navbar";
+import { TailwindIndicator } from "@/components/ui/tailwind-indicator";
+import SearchBar from "@/components/ui/SearchBar";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -28,7 +31,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Navbar />
+
+        <div className="flex justify-center items-center h-[10vh]">
+          <SearchBar />
+        </div>
+
         {children}
+        <TailwindIndicator />
       </body>
     </html>
   );
