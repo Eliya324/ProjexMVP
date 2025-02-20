@@ -1,24 +1,28 @@
 import Link from 'next/link'
 import Logo from "@/components/ui/Logo"
-import MainNav from './Main-nav'
-import MobileNav from './Mobile-nav'
+import MainNav from './MainNav'
+import MobileNav from './MobileNav'
+import SearchBar from './SearchBar';
 
 export default function Navbar() {
     return (
         <header className="sticky top-0 w-full border-b bg-white">
-            <div className="h-16 container flex items-center justify-between">
+            <nav className="h-16 container flex items-center justify-between mx-0 px-4">
 
                 {/* Logo */}
-                <h1 className="flex items-center justify-start flex-1">
+                <div className="flex-shrink-0">
                     <Link href='/'> <Logo /></Link>
-                </h1>
+                </div>
+
+                {/* Search bar */}
+                <SearchBar />
 
                 {/* Desktop navigation */}
                 <MainNav />
 
                 {/* Mobile navigation */}
                 <MobileNav />
-            </div>
+            </nav>
         </header>
     );
 }

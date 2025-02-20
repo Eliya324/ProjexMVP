@@ -33,10 +33,6 @@ export default function RootLayout({
       >
         <Navbar />
 
-        <div className="flex justify-center items-center h-[10vh]">
-          <SearchBar />
-        </div>
-
         {children}
         <TailwindIndicator />
       </body>
