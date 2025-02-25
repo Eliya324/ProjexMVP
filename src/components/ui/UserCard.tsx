@@ -1,11 +1,11 @@
 import { Card } from "@/components/ui/card";
 import { MapPin, Globe, Briefcase } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-
+import Image from "next/image";
 const UserCard = () => {
     const profile = {
         name: "Jony Vtrey",
-        imageUrl: "https://placehold.co/70x70",
+        imageUrl: "https://placehold.co/70x70.png",
         location: "Israel",
         language: "Hebrew",
         jobTitle: "Full Stack Developer",
@@ -18,10 +18,12 @@ const UserCard = () => {
             <Card className="relative w-full h-[255px] bg-white border border-brand-light rounded-2xl shadow-lg flex max-sm:w-[270px]">
                 {/* Profile Section */}
                 <div className="w-2/5 flex flex-col pt-12 items-center text-center">
-                    <img
+                    <Image
                         className="w-16 h-16 rounded-full border-2 border-brand-light shadow-md"
                         src={profile.imageUrl}
                         alt="Profile"
+                        width={64}
+                        height={64}
                     />
                     <h2 className="text-brand-light font-bold text-base mt-2">{profile.name}</h2>
                     <div className="flex flex-col gap-1 mt-2 text-sm text-brand-light font-bold">
