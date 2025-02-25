@@ -6,8 +6,8 @@ export default function Home() {
   return (
     <div>
       <div className="flex justify-center items-center h-screen bg-gray-100">
-        <ProjectCard></ProjectCard>
-        <UserCard></UserCard>
+        <ProjectCard />
+        <UserCard />
       </div>
     </div>
   );

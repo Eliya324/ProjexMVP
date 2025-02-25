@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { MapPin, Globe, Briefcase } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const UserCard = () => {
     const profile = {
@@ -14,16 +15,16 @@ const UserCard = () => {
     };
     return (
         <div className="relative max-w-[320px]">
-            <Card className="relative w-full h-[255px] bg-white border border-blue-800 rounded-2xl shadow-lg flex">
+            <Card className="relative w-full h-[255px] bg-white border border-brand-light rounded-2xl shadow-lg flex max-sm:w-[270px]">
                 {/* Profile Section */}
                 <div className="w-2/5 flex flex-col pt-12 items-center text-center">
                     <img
-                        className="w-16 h-16 rounded-full border-2 border-blue-800 shadow-md"
+                        className="w-16 h-16 rounded-full border-2 border-brand-light shadow-md"
                         src={profile.imageUrl}
                         alt="Profile"
                     />
-                    <h2 className="text-blue-800 font-bold text-base mt-2">{profile.name}</h2>
-                    <div className="flex flex-col gap-1 mt-2 text-sm text-blue-800 font-bold">
+                    <h2 className="text-brand-light font-bold text-base mt-2">{profile.name}</h2>
+                    <div className="flex flex-col gap-1 mt-2 text-sm text-brand-light font-bold">
                         <div className="flex items-center gap-1">
                             <MapPin size={16} /> <span>{profile.location}</span>
                         </div>
@@ -32,24 +33,23 @@ const UserCard = () => {
                         </div>
                     </div>
                 </div>
-                <div className="w-1 bg-blue-800 h-full shrink-0"></div>
                 {/* Details Section */}
-                <div className="w-3/5 flex flex-col justify-center p-4">
-                    <p className="text-blue-800 font-bold text-sm">{profile.jobTitle}</p>
-                    <p className="text-blue-800 text-xs mt-2">{profile.description}</p>
+                <div className="w-3/5 flex flex-col justify-center p-4 border-l-2 border-brand-light">
 
-                    <div className="flex overflow-x-auto whitespace-nowrap mt-3 gap-2">
-                        {profile.skills.map((skill, index) => (
-                            <span
-                                key={index}
-                                className="px-3 py-1 bg-blue-800 text-white text-xs font-medium rounded-full border border-blue-800"
-                            >
+                    <p className="text-brand-light font-bold text-sm">{profile.jobTitle}</p>
+                    <p className="text-brand-light text-xs mt-2">{profile.description}</p>
+
+                    <div className="flex overflow-x-auto whitespace-nowrap mt-3 gap-2 scrollbar-thin scrollbar-track-gray-200">
+                        {profile.skills.map((skill) => (
+                            <Badge
+                                key={skill}
+                                className="bg-brand-light text-white text-xs font-medium border border-brand-light rounded-full">
                                 {skill}
-                            </span>
+                            </Badge>
                         ))}
                     </div>
 
-                    <div className="flex items-center gap-1 mt-3 text-sm text-blue-800 font-bold">
+                    <div className="flex items-center gap-1 mt-3 text-sm text-brand-light font-bold">
                         <Briefcase size={16} /> <span>{profile.experience}</span>
                     </div>
                 </div>
