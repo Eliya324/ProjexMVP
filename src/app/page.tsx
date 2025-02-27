@@ -6,9 +6,10 @@ export default function Home() {
   return (
     <div>
 
-      <UserCard></UserCard>
-      <ProjectCard></ProjectCard>
-      <h1>Projex MVP</h1>
+      <div className="flex justify-center items-center h-screen bg-gray-100">
+        <ProjectCard />
+        <UserCard />
+      </div>
     </div>
   );
 }

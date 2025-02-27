@@ -17,6 +17,10 @@ const config: Config = {
 		},
 		extend: {
 			colors: {
+				brand: {
+					DEFAULT: "#000080",
+					light: "#1E40AF",
+				},
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				card: {
@@ -65,7 +69,7 @@ const config: Config = {
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [require("tailwindcss-animate"), require('tailwind-scrollbar')]
 };
 
 export default config;
