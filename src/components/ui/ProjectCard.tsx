@@ -31,7 +31,7 @@ const ProjectCard = () => {
                 </div>
                 <div className="flex overflow-x-auto whitespace-nowrap mt-4 gap-2 px-2 scrollbar-thin scrollbar-track-gray-200">
                     {techStack.map((skill) => (
-                        <Badge key={skill} className="bg-brand-light text-white text-xs font-medium border border-brand-light rounded-full">
+                        <Badge key={skill} className="bg-blue-light text-white text-xs font-medium border border-blue-light rounded-full">
                             {skill}
                         </Badge>
                     ))}
@@ -53,7 +53,7 @@ const ProjectCard = () => {
                     {profiles.map((src, i) => (
                         <Image
                             key={i}
-                            className="w-[38px] h-[40px] rounded-full border-[2px] border-brand-light shadow-md absolute"
+                            className="w-[38px] h-[40px] rounded-full border-[2px] border-blue-light shadow-md absolute"
                             style={{ left: `${i * 20}px` }}
                             src={src}
                             alt={`Profile ${i + 1}`}

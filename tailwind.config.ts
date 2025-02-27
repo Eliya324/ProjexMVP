@@ -17,7 +17,7 @@ const config: Config = {
 		},
 		extend: {
 			colors: {
-				brand: {
+				blue: {
 					DEFAULT: "#000080",
 					light: "#1E40AF",
 				},
