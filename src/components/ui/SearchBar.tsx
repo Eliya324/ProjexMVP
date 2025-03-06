@@ -4,7 +4,7 @@ import { Search } from "lucide-react";
 export default function SearchBar() {
     return (
         <div
-            className="relative flex items-center w-[50vw] xs:w-[60vw] sm:w-[50vw] md:w-[40vw] max-w-4/5 min-w-[200px] 
+            className="relative flex items-center w-[50vw] max-sm:w-4/5 sm:w-[50vw] md:w-[40vw] max-w-4/5 min-w-[200px] 
         h-10 md:h-12 rounded-full border-2 px-4 transition-all duration-200 border-gray-400 bg-gray-100
         focus-within:border-4 focus-within:border-gray-600"
         >
