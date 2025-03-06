@@ -16,6 +16,9 @@ const config: Config = {
 			},
 		},
 		extend: {
+			fontSize: {
+				'xxs': '0.65rem',
+			},
 			colors: {
 				brand: {
 					DEFAULT: "#000080",
