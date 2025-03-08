@@ -17,8 +17,8 @@ export default function MobileNav() {
                 <AlignJustify />
             </SheetTrigger>
             <SheetContent side='right'>
-                <div className='flex flex-col items-center gap-3 lg:gap-4 mt-6'>
-                    {links.map((link) => (
+            <div className='flex flex-col items-center justify-center gap-3 lg:gap-4'>
+            {links.map((link) => (
                         <Link key={link.href} href={link.href}>
                             {link.label}
                         </Link>
