@@ -45,7 +45,7 @@ const UserCard = () => {
                 <div className="w-full flex flex-wrap gap-y-0 pt-3.5 max-sm:pt-2 overflow-hidden max-sm:overflow-hidden max-h-[5rem] leading-tight">
                     <div className="line-clamp-2 w-full">
                         {user.skills.map((skill) => (
-                            <Badge key={skill} variant="skills" className="mr-1.5">
+                            <Badge key={skill} variant="skills" className="mr-1.5 max-sm:pt-0.5 max-sm:mr-1">
                                 {skill}
                             </Badge>
                         ))}

@@ -1,23 +1,26 @@
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-
+import { cn } from "@/lib/utils";
 const ProjectCard = () => {
     const project = {
         techStack: ["React", "Node.js", "Figma", "Tailwind", "SQL", "C#"],
         profiles: Array(3).fill("https://placehold.co/64x62.png"),
         rating: 4.8,
         starCount: 5,
-        Image: "https://placehold.co/270x150.png",
-        Name: "Contribution with automation",
-        Description: "Automated donation system with 100% transparency, turning your contributions into essential goods purchased directly, ensuring every donation reaches those in need efficiently and effectively."
+        image: "https://placehold.co/270x150.png",
+        name: "Contribution with automation",
+        description: "Automated donation system with 100% transparency, turning your contributions into essential goods purchased directly, ensuring every donation reaches those in need efficiently and effectively."
     };
 
     return (
-        <Card className="w-[280px] flex flex-col overflow-hidden max-sm:w-[90%] rounded-[10px] ">
+        <Card className={cn(
+            "flex flex-col overflow-hidden rounded-[10px]",
+            "w-[280px] max-sm:w-[90%]"
+        )} >
             <Image
                 className="w-full h-[150px] max-sm:h-[300px] object-cover rounded-[10px]"
-                src={project.Image}
+                src={project.image}
                 alt="Project"
                 width={500}
                 height={150}
@@ -26,17 +29,17 @@ const ProjectCard = () => {
             <CardContent className="relative flex flex-col justify-between h-auto overflow-hidden">
                 <div className="mt-2 px-2 h-[79px] max-sm:h-[85px] flex flex-col">
                     <div className="text-[15px] max-sm:text-[18px] font-bold text-black leading-tight">
-                        {project.Name}
+                        {project.name}
                     </div>
                     <div className="text-[13px] text-[#5B5252] mt-1 line-clamp-3 overflow-hidden">
-                        {project.Description}
+                        {project.description}
                     </div>
                 </div>
 
                 <div className="w-full px-2 pt-1.5 max-sm:pt-0 overflow-hidden h-[3.5rem] max-sm:h-[1.75rem]">
                     <div className="w-full flex flex-wrap gap-1.5 overflow-hidden text-ellipsis [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] max-sm:[-webkit-line-clamp:1] leading-tight">
                         {project.techStack.map((skill) => (
-                            <Badge key={skill} variant="skills" className="mr-1.5">
+                            <Badge key={skill} variant="skills" className="mr-1.5 max-sm:pt-0.5 max-sm:mr-1 max-sm:h-4">
                                 {skill}
                             </Badge>
                         ))}
