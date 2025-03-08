@@ -20,7 +20,7 @@ const config: Config = {
 				'xxs': '0.65rem',
 			},
 			colors: {
-				brand: {
+				blue: {
 					DEFAULT: "#000080",
 					light: "#1E40AF",
 				},

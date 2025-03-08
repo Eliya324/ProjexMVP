@@ -1,0 +1,242 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String  @id @default(uuid())
+  username         String  @unique
+  email            String  @unique
+  password         String
+  profilePicture   String?
+  fullName         String
+  professionalTitle String?
+  location        String?
+  personalSummary String?
+  contactPhone    String?
+  skills          String[]
+  interests       String[]
+  languagesSpoken String[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  professionalExperiences ProfessionalExperience[]
+  educations             Education[]
+  recommendationsSent     Recommendation[] @relation("RecommendationFromUser")
+  recommendationsReceived Recommendation[] @relation("RecommendationToUser")
+  certifications          Certification[]
+  publications            Publication[]
+  ownedProjects           Project[] @relation("Owner")
+  projectRelationships    ProjectRelationship[]
+  relationshipsSent       UserRelationship[] @relation("RelationshipFromUser")
+  relationshipsReceived   UserRelationship[] @relation("RelationshipToUser")
+  posts                  Post[]
+  comments               Comment[]
+  tweets                 Tweet[]
+  likes                  Like[]
+  projectRatings         ProjectRating[]
+  notifications          Notification[] @relation("userNotifications") // Notifications received by a user
+  notificationsSent      Notification[] @relation("senderNotifications") // Notifications sent by a user
+}
+
+model ProfessionalExperience {
+  id          String @id @default(uuid())
+  user        User   @relation(fields: [userId], references: [id])
+  userId      String
+  jobTitle    String
+  company     String
+  startDate   DateTime
+  endDate     DateTime?
+  description String?
+}
+
+model Education {
+  id          String @id @default(uuid())
+  user        User   @relation(fields: [userId], references: [id])
+  userId      String
+  degree      String
+  institution String
+  startDate   DateTime
+  endDate     DateTime?
+  description String?
+}
+
+model Recommendation {
+  id         String @id @default(uuid())
+  fromUser   User   @relation("RecommendationFromUser", fields: [fromUserId], references: [id])
+  fromUserId String
+  toUser     User   @relation("RecommendationToUser", fields: [toUserId], references: [id])
+  toUserId   String
+  content    String
+}
+
+model Certification {
+  id          String @id @default(uuid())
+  user        User   @relation(fields: [userId], references: [id])
+  userId      String
+  title       String
+  institution String
+  year        Int
+}
+
+model Publication {
+  id              String @id @default(uuid())
+  user            User   @relation(fields: [userId], references: [id])
+  userId          String
+  title           String
+  publicationDate DateTime
+  link            String?
+}
+
+model Project {
+  id               String  @id @default(uuid())
+  owner            User    @relation("Owner", fields: [ownerId], references: [id])
+  ownerId          String
+  title            String
+  shortDescription String
+  objective        String?
+  requiredSkills   String[]
+  usedTechnologies String[]
+  missingTalents   String[]
+  status           ProjectStatus
+  documentPDFs     String[]
+  relationships    ProjectRelationship[]
+  posts            Post[]
+  ratings          ProjectRating[]
+}
+
+enum ProjectStatus {
+  ACTIVE
+  COMPLETED
+}
+
+model ProjectRelationship {
+  id          String @id @default(uuid())
+  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId   String
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  type        ProjectRelationshipType
+  status      MembershipStatus?
+}
+
+enum ProjectRelationshipType {
+  MEMBER
+  FOLLOWER
+}
+
+enum MembershipStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model UserRelationship {
+  id          String @id @default(uuid())
+  fromUser    User   @relation("RelationshipFromUser", fields: [fromUserId], references: [id])
+  fromUserId  String
+  toUser      User   @relation("RelationshipToUser", fields: [toUserId], references: [id])
+  toUserId    String
+  type        RelationshipType
+  status      RelationshipStatus
+}
+
+enum RelationshipType {
+  FRIEND
+  FOLLOWER
+}
+
+enum RelationshipStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model ProjectRating {
+  id        String  @id @default(uuid())
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String
+  rating    Int
+}
+
+model Post {
+  id        String  @id @default(uuid())
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String
+  author      User    @relation(fields: [authoeId], references: [id], onDelete: Cascade)
+  authoeId    String
+  content   String
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  likes     Like[]
+  comments  Comment[]
+  notifications Notification[]
+}
+
+model Like {
+  id        String  @id @default(uuid())
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String
+  post      Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+  createdAt DateTime @default(now())
+  @@index([userId, postId])  
+  @@unique([userId, postId]) // A user can only like a post once
+}
+
+model Tweet {
+  id        String  @id @default(uuid())
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  content   String
+  image     String?
+  createdAt DateTime @default(now())
+}
+
+model Comment {
+  id        String  @id @default(uuid())
+  author      User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId    String
+  post      Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+  content   String
+  createdAt DateTime @default(now())
+  @@index([authorId, postId]) // composite index for faster querying
+}
+
+model Notification {
+  id        String  @id @default(uuid())
+  userId    String
+  senderId  String
+  type      NotificationType
+  read      Boolean @default(false)
+  postId    String?
+  content   String
+  createdAt DateTime @default(now())
+
+  
+  user      User    @relation("userNotifications", fields: [userId], references: [id], onDelete: Cascade)
+  sender    User    @relation("senderNotifications", fields: [senderId], references: [id])
+  post      Post?    @relation(fields: [postId], references: [id])
+
+  @@index([userId, createdAt])
+}
+
+enum NotificationType {
+  LIKE
+  COMMENT
+  FOLLOW
+  PROJECT_RELATIONSHIP
+}

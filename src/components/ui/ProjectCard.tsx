@@ -63,7 +63,7 @@ const ProjectCard = () => {
                     {project.profiles.map((src, i) => (
                         <Image
                             key={i}
-                            className="rounded-full border-[2px] border-brand-light shadow-md absolute"
+                            className="rounded-full border-[2px] border-blue-light shadow-md absolute"
                             style={{ left: `${i * 20}px` }}
                             src={src}
                             alt={`Profile ${i + 1}`}
