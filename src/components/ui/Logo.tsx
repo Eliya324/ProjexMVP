@@ -10,5 +10,5 @@ export default function Logo() {
             PX
         </h1>
     );
-}            // sm:w-[200px] md:w-[250px] lg:w-[300px] 
+}
 
