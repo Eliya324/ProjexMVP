@@ -1,10 +1,9 @@
 import Link from 'next/link';
+import AuthButtons from './AuthButtons';
 
 export default function MainNav() {
     const links = [
-        { href: "/about", label: "About" },
-        { href: "/signup", label: "Sign Up" },
-        { href: "/login", label: "Login" }
+        { href: "/about", label: "About" }
     ];
 
     return (
@@ -14,6 +13,7 @@ export default function MainNav() {
                     {link.label}
                 </Link>
             ))}
+            <AuthButtons/>
         </div>
 
     );
