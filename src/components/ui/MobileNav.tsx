@@ -5,11 +5,11 @@ import {
 } from "@/components/ui/Sheet"
 import { AlignJustify } from "lucide-react"
 import Link from 'next/link'
+import AuthButtons from "./AuthButtons";
+
 export default function MobileNav() {
     const links = [
-        { href: "/about", label: "About" },
-        { href: "/signup", label: "Sign Up" },
-        { href: "/login", label: "Login" }
+        { href: "/about", label: "About" }
     ];
     return <div className="md:hidden">
         <Sheet>
@@ -23,6 +23,7 @@ export default function MobileNav() {
                             {link.label}
                         </Link>
                     ))}
+                    <AuthButtons/>
                 </div>
             </SheetContent>
         </Sheet>
