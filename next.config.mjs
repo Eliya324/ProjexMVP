@@ -7,6 +7,8 @@ const nextConfig = {
                 hostname: 'placehold.co',
             },
         ],
+        dangerouslyAllowSVG: true, 
+        contentSecurityPolicy: "default-src 'self'; img-src *; media-src *; script-src 'none'; sandbox;", // שיפור אבטחה
     },
 };
 

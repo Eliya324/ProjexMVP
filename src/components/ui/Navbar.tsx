@@ -1,28 +1,35 @@
-import Link from 'next/link'
-import Logo from "@/components/ui/Logo"
-import MainNav from './MainNav'
-import MobileNav from './MobileNav'
-import SearchBar from './SearchBar';
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import Logo from "@/components/ui/Logo";
+import MainNav from "./MainNav";
+import MobileNav from "./MobileNav";
+import SearchBar from "./SearchBar";
 
 export default function Navbar() {
-    return (
-        <header className="sticky top-0 w-full border-b bg-white">
-            <nav className="h-16 container flex items-center justify-between mx-0 px-4">
+  const pathname = usePathname();
 
-                {/* Logo */}
-                <div className="flex-shrink-0">
-                    <Link href='/'> <Logo /></Link>
-                </div>
+  return (
+    <header className="fixed top-0 w-full h-16 border-b bg-white z-[100] shadow-md">
+      <nav className="h-full container flex items-center justify-between mx-0 px-4">
+        {/* לוגו */}
+        <div className="flex-shrink-0">
+          <Link href="/">
+            {" "}
+            <Logo />
+          </Link>
+        </div>
 
-                {/* Search bar */}
-                <SearchBar />
+        {/* חיפוש - יוצג רק אם זה לא דף הבית */}
+        {pathname !== "/" && <SearchBar />}
 
-                {/* Desktop navigation */}
-                <MainNav />
+        {/* תפריט שולחני */}
+        <MainNav />
 
-                {/* Mobile navigation */}
-                <MobileNav />
-            </nav>
-        </header>
-    );
+        {/* תפריט מובייל */}
+        <MobileNav />
+      </nav>
+    </header>
+  );
 }
