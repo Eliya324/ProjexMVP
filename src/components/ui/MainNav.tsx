@@ -7,7 +7,7 @@ export default function MainNav() {
     ];
 
     return (
-        <div className="hidden md:flex items-center gap-3 lg:gap-4 ml-8">
+        <div className="hidden md:flex items-center gap-3 lg:gap-4 ml-8 text-md">
             {links.map((link) => (
                 <Link key={link.href} href={link.href}>
                     {link.label}

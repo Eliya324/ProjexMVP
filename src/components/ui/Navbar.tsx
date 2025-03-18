@@ -6,8 +6,8 @@ import SearchBar from './SearchBar';
 
 export default function Navbar() {
     return (
-        <header className="sticky top-0 w-full border-b bg-white">
-            <nav className="h-16 container flex items-center justify-between mx-0 px-4">
+        <header className="sticky top-1 w-full border-b bg-white">
+            <nav className="h-20 container flex items-center justify-between mx-0 px-4">
 
                 {/* Logo */}
                 <div className="flex-shrink-0">
