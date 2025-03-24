@@ -27,6 +27,11 @@ const developers = [
   "IoT Developer",
   "Systems Programmer",
   "Test Automation Engineer",
+  "Front-End Developer",
+  "Back-End Developer",
+  "Full-Stack Developer",
+  "Mobile Developer",
+  "Data Scientist",
 ];
 const projects = Array.from({ length: 6 }).map((_, index) => ({
   id: index,
@@ -58,39 +63,40 @@ const users = Array.from({ length: 6 }).map((_, index) => ({
 
 export default function HomePage() {
   return (
-    <div className="mt-[700px] flex flex-col items-center w-full relative px-4 sm:px-0">
+    <div className="h-full pt-24 flex flex-col overflow-y-auto border border-red items-center w-full  relative px-4 sm:px-0">
       {/* Banner */}
-      <div className="relative w-full max-w-[1300px] h-[200px] sm:h-[200px] md:h-[350px] rounded-[20px]  overflow-hidden bg-gray-300 flex items-center justify-center">
+      <div className="relative w-[95%]   max-sm:h-[180px]  sm:h-[200px] md:h-[250px] lg:h-[280px]  xl:h-[300px] 2xl:h-[320px] rounded-[20px] overflow-hidden border border-red-300 flex items-center justify-center ">
         <Image
           src="https://placehold.co/1300x350"
           alt="Homepage Banner"
           width={1300}
           height={350}
-          className="rounded-[20px] object-cover w-full h-full overflow-hidden"
+          className="rounded-[20px] object-cover w-full  h-full"
         />
-        <div className="absolute top-[10%] left-[5%] w-[90%] sm:w-[10%] md:w-[1150px] text-white text-left">
-          <h1 className="text-[22px] sm:text-[28px] md:text-[36px] font-bold leading-tight">
+        <div className="absolute top-[15%] sm:top-[5%] left-[5%] w-[90%] sm:w-[80%]   text-white text-left">
+          <h1 className="text-[20px] sm:text-[24px] md:text-[28px] 2xl:text-[32px] font-bold leading-tight">
             Connecting <span className="text-[#0ccb40]">Talent</span> to
             <span className="text-[#e77509]"> opportunity</span>
           </h1>
-          <h2 className="text-[18px] sm:text-[24px] md:text-[32px] font-bold leading-tight">
+          <h2 className="text-[16px] sm:text-[20px] md:text-[24px] 2xl:text-[28px] font-bold leading-tight">
             Connect, <span className="text-[#2ea3f2]">create</span>, and
             <span className="text-[#0ccb40]"> collaborate</span>
           </h2>
-          <p className="text-[14px] sm:text-[18px] md:text-[20px] font-light mt-2">
+          <p className="text-[12px] sm:text-[18px] md:text-[18px] xl:text-[25px] font-light mt-2 break-words whitespace-normal">
             Find the missing piece—whether it's the talent you need or the
             project that needs you.
           </p>
         </div>
+
         {/* Search Field */}
-        <div className="absolute bottom-[5%] sm:bottom-[10%] left-1/2 transform -translate-x-1/2 w-[70%] sm:w-[500px] h-[50px]">
+        <div className="absolute bottom-[5%] sm:bottom-[10%] md:bottom-[3%] left-1/2 transform -translate-x-1/2 w-[70%] sm:w-[500px] h-[50px]">
           <SearchBar />
         </div>
       </div>
-      {/* Developer Types Row */}
-      <div className="w-full max-w-[1300px] mx-auto mt-4 relative">
+      {/* {/* Developer Types Row */}
+      <div className=" max-sm:w-[95%] sm:w-[95%] sm:w-[90%] mx-auto mt-3 relative">
         <Carousel className="w-full">
-          <CarouselContent className="flex overflow-x-auto md:overflow-visible scrollbar-hide md:scrollbar-default">
+          <CarouselContent className="flex overflow-x-auto sm:overflow-visible scrollbar-hide sm:scrollbar-default">
             {developers.map((role, index) => (
               <CarouselItem
                 key={index}
@@ -98,8 +104,8 @@ export default function HomePage() {
               >
                 <div className="p-1 flex justify-center">
                   <div
-                    className="shadow-md rounded-lg bg-white flex items-center justify-center 
-              w-[70px] h-[70px] sm:w-[90px] sm:h-[90px] text-center"
+                    className="shadow-md rounded-lg border border-white flex items-center justify-center 
+               w-[65px] h-[65px] sm:w-[72px] sm:h-[72px] xl:w-[85px]  xl:h-[85px]  text-center"
                   >
                     <span className="text-[10px] sm:text-xs font-semibold px-1">
                       {role}
@@ -109,53 +115,60 @@ export default function HomePage() {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <div className="hidden md:block">
-            <CarouselPrevious />
-            <CarouselNext />
+          <div className="hidden sm:flex justify-between absolute top-1/2 left-0 right-0 mx-auto max-w-[95%] -translate-y-1/2">
+            <CarouselPrevious className="absolute left-0  sm:-left-12 md:-left-10 lg:-left-10 xl:-left-18" />
+            <CarouselNext className="absolute right-0 sm:-right-12 md:-right-10 lg:-right-14 xl:-right-18" />
           </div>
         </Carousel>
       </div>
-      {/* All Projects */}
-      <div className="w-full md:w-[1300px] mt-4 text-left">
-        <h2 className="text-[28px] md:text-[35px] font-bold text-[#000080] font-lato">
+      {/* {/* All Projects */}
+      <div className="relative w-[95%] max-w-[1300px] mt-2 text-left">
+        <h2 className="text-[24px] md:text-[35px] font-bold text-[#000080] font-lato">
           All Projects
         </h2>
       </div>
       {/* Projects Carousel */}
-      <div className="w-full max-w-[1300px] mx-auto mt-4 relative">
-        <Carousel className="w-full">
-          <CarouselContent className="flex overflow-x-auto md:overflow-visible scrollbar-hide md:scrollbar-default">
+      <div className="relative w-[95%] max-w-[1300px]  mx-auto mt-2">
+        <Carousel className="relative w-full">
+          <CarouselContent className="flex  max-sm:flex-col max-sm:items-center max-sm:h-full  max-sm:overflow-y-auto max-sm:items-center max-sm:h-full  sm:h-[400px] max-sm:h-[1400px] sm:flex-row sm:overflow-visible scrollbar-hide sm:scrollbar-default">
             {projects.map((_, index) => (
               <CarouselItem
                 key={index}
-                className="basis-1/2 sm:basis-1/3 md:basis-1/4"
+                className="basis-[90%] max-sm:basis-1/5 sm:basis-[50%] md:basis-[39%] 
+                    lg:basis-[30%] xl:basis-1/4 flex justify-center items-center"
               >
-                <div className="p-1">
+                <div className="p-1 w-full flex justify-center">
                   <ProjectCard />
                 </div>
               </CarouselItem>
             ))}
           </CarouselContent>
-          <div className="hidden md:block">
-            <CarouselPrevious />
-            <CarouselNext />
+          <div className="hidden sm:flex justify-between absolute top-1/2 w-full -translate-y-1/2">
+            <div className="hidden sm:flex justify-between absolute top-1/2 left-0 right-0 mx-auto max-w-[95%] -translate-y-1/2">
+              <CarouselPrevious className="absolute left-0 sm:-left-6 md:-left-6 lg:-left-10 xl:-left-12 2xl:-left-20" />
+              <CarouselNext className="absolute right-0 sm:-right-6 md:-right-11 lg:-right-12 xl:-right-14 2xl:-right-20" />
+            </div>
+          </div>
+          {/* Bottom arrow (only for small screens) */}
+          <div className="absolute bottom-[-15px] max-sm:left-[41%]  -translate-x-1/2 sm:hidden">
+            <CarouselNext className="rotate-90 w-10 h-10" />
           </div>
         </Carousel>
       </div>
       {/* All Talents */}
-      <div className="w-full md:w-[1300px] mt-8 text-left">
-        <h2 className="text-[28px] md:text-[35px] font-bold text-[#000080] font-lato">
+      <div className="relative w-[95%] max-w-[1300px] mt-6 text-left">
+        <h2 className="text-[24px] md:text-[35px] font-bold text-[#000080] font-lato">
           All Talents
         </h2>
       </div>
       {/* Talents Carousel */}
-      <div className="w-full max-w-[1300px] mx-auto mt-4 relative">
-        <Carousel className="w-full">
-          <CarouselContent className="flex overflow-x-auto md:overflow-visible scrollbar-hide md:scrollbar-default gap-4">
-            {users.map((user) => (
+      <div className="relative w-[95%] max-w-[1300px] mx-auto mt-2">
+        <Carousel className="relative w-full">
+          <CarouselContent className="flex  max-sm:flex-col  max-sm:overflow-y-auto  sm:h-[230px] max-sm:h-[500px]  sm:flex-row sm:overflow-visible scrollbar-hide sm:scrollbar-default">
+            {users.map((user, index) => (
               <CarouselItem
                 key={user.id}
-                className="basis-1/2 sm:basis-1/3 md:basis-1/4"
+                className="basis-[90%]  max-sm:basis-1/3 sm:basis-[50%] md:basis-[41%] lg:basis-[31.5%] xl:basis-1/4 flex justify-center items-center"
               >
                 <div className="p-1">
                   <UserCard />
@@ -163,9 +176,13 @@ export default function HomePage() {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <div className="hidden md:block">
-            <CarouselPrevious />
-            <CarouselNext />
+          <div className="hidden sm:flex justify-between absolute top-1/2 left-0 right-0 mx-auto max-w-[95%] -translate-y-1/2">
+            <CarouselPrevious className="absolute left-0 sm:-left-7 md:-left-6 lg:-left-10 xl:-left-12 2xl:-left-20" />
+            <CarouselNext className="absolute right-0 sm:-right-7 md:-right-11 lg:-right-12 xl:-right-14 2xl:-right-20" />
+          </div>
+          {/* Bottom arrow (only for small screens) */}
+          <div className="absolute bottom-[-15px] max-sm:left-[41%]  -translate-x-1/2 sm:hidden">
+            <CarouselNext className="rotate-90 w-10 h-10" />
           </div>
         </Carousel>
       </div>

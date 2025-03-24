@@ -6,8 +6,8 @@ import HomePage from "@/components/ui/HomePage";
 export default function Home() {
   return (
     <div>
-
-      <div className="flex justify-center items-center h-screen bg-gray-100">
+      <div className=" flex justify-center min-h-screen bg-gray-100">
+        {" "}
         {/* <ProjectCard />
         <UserCard /> */}
         <HomePage />
@@ -15,3 +15,6 @@ export default function Home() {
     </div>
   );
 }
+
+
+
