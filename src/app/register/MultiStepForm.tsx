@@ -48,7 +48,6 @@ export default function MultiStepForm() {
 
 const updateFormData = (newData: Partial<FormData>) => {
   setFormData((prev) => {
-      console.log("🔄 Merging formData:", { ...prev, ...newData }); // בדיקת נתונים
       
       return {
           ...prev,
