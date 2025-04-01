@@ -1,4 +1,3 @@
-// import { Card, CardContent } from "@/components/ui/card";
 import { Card, CardContent } from "./card";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
@@ -83,7 +82,6 @@ const ProjectCard = () => {
             <Image
               key={i}
               className="rounded-full border-[2px] border-blue-light shadow-md absolute"
-              // style={{ left: ${i * 20}px }}
               style={{ left: `${i * 20}px` }}
               src={src}
               alt={`Profile ${i + 1}`}

@@ -1,7 +1,6 @@
 import ProjectCard from "@/components/ui/ProjectCard";
 import UserCard from "@/components/ui/UserCard";
 import Image from "next/image";
-//import { Button } from "@/components/ui/Button";
 import HomePage from "@/components/ui/HomePage";
 export default function Home() {
   return (
@@ -15,6 +14,4 @@ export default function Home() {
     </div>
   );
 }
-
-
 

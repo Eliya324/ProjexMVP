@@ -13,7 +13,7 @@ export default function Navbar() {
   return (
     <header className="fixed top-0 w-full h-16 border-b bg-white z-[100] shadow-md">
       <nav className="h-full container flex items-center justify-between mx-0 px-4">
-        {/* לוגו */}
+        {/* Logo*/}
         <div className="flex-shrink-0">
           <Link href="/">
             {" "}
@@ -21,13 +21,13 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* חיפוש - יוצג רק אם זה לא דף הבית */}
+        {/* Search - will be displayed only if it's not the home page */}
         {pathname !== "/" && <SearchBar />}
 
-        {/* תפריט שולחני */}
+        {/* Desktop menu */}
         <MainNav />
 
-        {/* תפריט מובייל */}
+        {/* Mobile menu */}
         <MobileNav />
       </nav>
     </header>
