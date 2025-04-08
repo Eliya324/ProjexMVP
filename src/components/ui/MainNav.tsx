@@ -1,10 +1,7 @@
 import Link from 'next/link';
 import AuthButtons from './AuthButtons';
 
-export default function MainNav() {
-    const links = [
-        { href: "/about", label: "About" }
-    ];
+export default function MainNav({ links }: { links: { href: string; label: string }[] }) {
 
     return (
         <div className="hidden md:flex items-center gap-3 lg:gap-4 ml-8 text-md">
@@ -13,7 +10,7 @@ export default function MainNav() {
                     {link.label}
                 </Link>
             ))}
-            <AuthButtons/>
+            <AuthButtons />
         </div>
 
     );

@@ -15,7 +15,7 @@ const ProjectCard = () => {
 
     return (
         <Card className={cn(
-            "flex flex-col overflow-hidden rounded-[10px]",
+            "flex flex-col overflow-hidden rounded-[10px] h-[368px] max-sm:h-[495px]",
             "w-[280px] max-sm:w-[90%]"
         )} >
             <Image
