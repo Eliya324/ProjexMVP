@@ -23,9 +23,15 @@ export default function NewProjectClient() {
                 missingTalents: [],
                 status: "ACTIVE",
                 documentPDFs: formData.documentPDFs || [],
-                relationships: [],
-                posts: [],
-                ratings: [],
+                relationships: {
+                    create: []
+                },
+                posts: {
+                    create: []
+                },
+                ratings: {
+                    create: []
+                }
             };
 
             const response = await fetch("/api/projects", {
@@ -46,5 +52,5 @@ export default function NewProjectClient() {
         }
     };
 
-    return <NewProject onSubmitForm={ handleSubmit } />
+    return <NewProject onSubmitForm={handleSubmit} />
 }
