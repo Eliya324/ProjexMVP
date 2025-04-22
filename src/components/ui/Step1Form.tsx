@@ -45,83 +45,84 @@ export default function Step1Form({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-2xl space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="flex flex-col gap-6">
-          {/* Phone Number Input */}
-          <div>
-            <label className="block text-lg font-medium">Phone Number</label>
-            <Input
-              type="text"
-              {...register("phone")}
-              className="mt-2"
-              placeholder="Enter your phone number"
-            />
-            {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message as string}</p>}
+      <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-2xl space-y-6">
+        <h2 className="text-3xl font-semibold text-violet-900">Personal Details</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="flex flex-col gap-6">
+            {/* Phone Number Input */}
+            <div>
+              <label className="block text-lg font-medium">Phone Number</label>
+              <Input
+                type="text"
+                {...register("phone")}
+                className="mt-2"
+                placeholder="Enter your phone number"
+              />
+              {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message as string}</p>}
+            </div>
+
+            {/* Location Input */}
+            <div>
+              <label className="block text-lg font-medium">Location</label>
+              <Input
+                type="text"
+                {...register("location")}
+                className="mt-2"
+                placeholder="Enter your location"
+              />
+              {errors.location && <p className="text-red-500 text-sm">{errors.location.message as string}</p>}
+            </div>
+
+            {/* Language Selector */}
+            <div>
+              <label className="block text-lg font-medium">Languages *</label>
+              <LanguageSelector
+                defaultLanguages={formData.languagesSpoken || []} //]
+                onSelect={(values: string[]) => {
+                  setValue("languagesSpoken", values);
+                  updateFormData({ languagesSpoken: values });
+                  trigger("languagesSpoken");
+                }}
+              />
+              {errors.languagesSpoken?.message && (
+                <p className="text-red-500 text-sm">{String(errors.languagesSpoken.message)}</p>
+              )}
+            </div>
+
+            {/* Skills Input*/}
+            <div>
+              <SkillsInput
+                defaultSkills={formData.skills || []}
+                onChange={(skills) => {
+                  setValue("skills", skills);
+                  updateFormData({ skills });
+                }}
+              />
+            </div>
           </div>
 
-          {/* Location Input */}
-          <div>
-            <label className="block text-lg font-medium">Location</label>
-            <Input
-              type="text"
-              {...register("location")}
-              className="mt-2"
-              placeholder="Enter your location"
-            />
-            {errors.location && <p className="text-red-500 text-sm">{errors.location.message as string}</p>}
-          </div>
+          <div className="flex flex-col gap-6">
 
-          {/* Language Selector */}
-          <div>
-            <label className="block text-lg font-medium">Languages *</label>
-            <LanguageSelector
-              defaultLanguages={formData.languagesSpoken || []} //]
-              onSelect={(values: string[]) => {
-                setValue("languagesSpoken", values);
-                updateFormData({ languagesSpoken: values });
-                trigger("languagesSpoken");
-              }}
-            />
-            {errors.languagesSpoken?.message && (
-              <p className="text-red-500 text-sm">{String(errors.languagesSpoken.message)}</p>
-            )}
-          </div>
-
-          {/* Skills Input*/}
-          <div>
-            <SkillsInput
-              defaultSkills={formData.skills || []}
-              onChange={(skills) => {
-                setValue("skills", skills);
-                updateFormData({ skills });
-              }}
-            />
+            {/* Personal Summary Textarea*/}
+            <div>
+              <label className="block text-lg font-medium">Personal Summary</label>
+              <Textarea
+                {...register("summary")}
+                className="mt-2 min-h-[150px]"
+                placeholder="Write about yourself..."
+              />
+            </div>
           </div>
         </div>
+        {/* Submit Button */}
+        <div className="flex justify-end mt-6">
 
-        <div className="flex flex-col gap-6">
+          <Button type="submit"
+            className="bg-blue-600 text-white px-6 py-3 text-lg rounded-lg" onClick={() => console.log("Button clicked")}>
+            Continue
+          </Button>
 
-          {/* Personal Summary Textarea*/}
-          <div>
-            <label className="block text-lg font-medium">Personal Summary</label>
-            <Textarea
-              {...register("summary")}
-              className="mt-2 min-h-[150px]"
-              placeholder="Write about yourself..."
-            />
-          </div>
         </div>
-      </div>
-      {/* Submit Button */}
-      <div className="flex justify-end mt-6">
-
-        <Button type="submit"
-          className="bg-blue-600 text-white px-6 py-3 text-lg rounded-lg" onClick={() => console.log("Button clicked")}>
-          Continue
-        </Button>
-
-      </div>
-    </form>
+      </form>
   );
 }

@@ -13,31 +13,31 @@ export async function POST(req) {
         })
 
         if (existingUser) {
-            return new Response(JSON.stringify({ error: "User already exists" }), {
-                status: 400,
-                headers: { "Content-Type": "application/json" }
-            })
+            return NextResponse.json(
+                { error: "User already exists" },
+                { status: 400 }
+            );
         }
 
         // create user
         const newUser = await prisma.user.create({
             data: {
-                username,
+                username: username??email.split('@')[0],
                 email,
-                fullName: username
+                fullName: username??email.split('@')[0]
             }
         })
 
-        return new Response(JSON.stringify({ success: true, user: newUser }), {
-            status: 201,
-            headers: { "Content-Type": "application/json" }
-        })
+        return NextResponse.json(
+            { success: true, user: newUser },
+            { status: 201 }
+        );
     } catch (error) {
-        console.error("Error registering user:", error)
-        return new Response(JSON.stringify({ error: "Internal Server Error" }), {
-            status: 500,
-            headers: { "Content-Type": "application/json" }
-        })
+        console.error("Error registering user:", error);
+        return NextResponse.json(
+            { error: "Internal Server Error" },
+            { status: 500 }
+        );
     }
 }
 
@@ -48,7 +48,7 @@ export async function PUT(req) {
 
         // Protect the route by checking if the user is signed in
         if (!userId) {
-            return res.status(401).json({ error: 'Unauthorized' })
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
         // Initialize the Backend SDK
@@ -56,8 +56,8 @@ export async function PUT(req) {
 
         // Get the user's full `Backend User` object
         const user = await client.users.getUser(userId)
+
         const email = user.primaryEmailAddress ? user.primaryEmailAddress.emailAddress : null;
-        console.log("email", email);
 
         if (!email) {
             return NextResponse.json({ error: "Email not found" }, { status: 400 });
@@ -93,99 +93,72 @@ export async function PUT(req) {
                 educations: true,
             }
         });
-        //update  and create the professionalExperiences
-        for (const exp of data.professionalExperiences) {
-            if (exp.id) {
-                // check if it exist
-                const existingExp = await prisma.professionalExperience.findUnique({
-                    where: { id: exp.id },
-                });
+        // Update/create professional experiences
+        await Promise.all(
+            data.professionalExperiences.map(async (exp) => {
+                const commonData = {
+                    jobTitle: exp.jobTitle,
+                    company: exp.company,
+                    startDate: formatDate(exp.startDate),
+                    endDate: formatDate(exp.endDate),
+                    description: exp.description,
+                };
 
-                if (existingExp) {
-                    //update
-                    await prisma.professionalExperience.update({
+                if (exp.id) {
+                    const existingExp = await prisma.professionalExperience.findUnique({
                         where: { id: exp.id },
-                        data: {
-                            jobTitle: exp.jobTitle,
-                            company: exp.company,
-                            startDate: formatDate(exp.startDate),
-                            endDate: formatDate(exp.endDate),
-                            description: exp.description,
-                        },
                     });
-                } else {
-                    // create
-                    await prisma.professionalExperience.create({
-                        data: {
-                            userId: neonUserId,
-                            jobTitle: exp.jobTitle,
-                            company: exp.company,
-                            startDate: formatDate(exp.startDate),
-                            endDate: formatDate(exp.endDate),
-                            description: exp.description,
-                        },
-                    });
-                }
-            } else {
-                // create new one
-                await prisma.professionalExperience.create({
-                    data: {
-                        userId: neonUserId,
-                        jobTitle: exp.jobTitle,
-                        company: exp.company,
-                        startDate: formatDate(exp.startDate),
-                        endDate: formatDate(exp.endDate),
-                        description: exp.description,
-                    },
-                });
-            }
-        }
-        //Ctreate and update educations
-        for (const edu of data.educations) {
-            if (edu.id) {
-                 // check if it exist
-                const existingEdu = await prisma.education.findUnique({
-                    where: { id: edu.id },
-                });
 
-                if (existingEdu) {
-                    // update
-                    await prisma.education.update({
-                        where: { id: edu.id },
-                        data: {
-                            institution: edu.institution,
-                            degree: edu.degree,
-                            startDate: formatDate(edu.startDate),
-                            endDate: formatDate(edu.endDate),
-                            description: edu.description,
-                        },
-                    });
-                } else {
-                    // create
-                    await prisma.education.create({
-                        data: {
-                            userId: neonUserId,
-                            institution: edu.institution,
-                            degree: edu.degree,
-                            startDate: formatDate(edu.startDate),
-                            endDate: formatDate(edu.endDate),
-                            description: edu.description,
-                        },
-                    });
+                    if (existingExp) {
+                        return prisma.professionalExperience.update({
+                            where: { id: exp.id },
+                            data: commonData,
+                        });
+                    }
                 }
-            } else {
-                await prisma.education.create({
+
+                return prisma.professionalExperience.create({
                     data: {
                         userId: neonUserId,
-                        institution: edu.institution,
-                        degree: edu.degree,
-                        startDate: formatDate(edu.startDate),
-                        endDate: formatDate(edu.endDate),
-                        description: edu.description,
+                        ...commonData,
                     },
                 });
-            }
-        }
+            })
+        );
+
+        // Update/create educations
+        await Promise.all(
+            data.educations.map(async (edu) => {
+                const commonData = {
+                    institution: edu.institution,
+                    degree: edu.degree,
+                    startDate: formatDate(edu.startDate),
+                    endDate: formatDate(edu.endDate),
+                    description: edu.description,
+                };
+
+                if (edu.id) {
+                    const existingEdu = await prisma.education.findUnique({
+                        where: { id: edu.id },
+                    });
+
+                    if (existingEdu) {
+                        return prisma.education.update({
+                            where: { id: edu.id },
+                            data: commonData,
+                        });
+                    }
+                }
+
+                return prisma.education.create({
+                    data: {
+                        userId: neonUserId,
+                        ...commonData,
+                    },
+                });
+            })
+        );
+
         return NextResponse.json(updatedUser);
     } catch (error) {
         console.error(error);

@@ -81,13 +81,12 @@ export default function Step2Form({
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-white px-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-2xl mt-6 space-y-6">
             <h2 className="text-3xl font-semibold text-violet-900">Professional Experience</h2>
             <p className="text-center text-gray-600 mt-2">
                 You can add your work experience or skip this step.
             </p>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-2xl mt-6 space-y-6">
                 {fields.map((field, index) => {
                     const startDate = watch(`professionalExperiences.${index}.startDate`);
                     const endDate = watch(`professionalExperiences.${index}.endDate`);
@@ -200,6 +199,5 @@ export default function Step2Form({
                     </button>
                 </div>
             </form>
-        </div>
     );
 }
