@@ -6,6 +6,7 @@ import { useForm, FormProvider } from "react-hook-form"
 import { Button } from "@/components/ui/Button";
 import { MultiSelect } from "@/components/ui/MultiSelect";
 import { Toaster } from 'react-hot-toast';
+import { Textarea } from "@/components/ui/textarea";
 import React from "react";
 import {
   Form,
@@ -17,7 +18,7 @@ import {
   FormItem,
 } from "./form";
 
-interface FormValues {
+export interface FormValues {
   title: string;
   objective: string;
   requiredSkills: string[];
@@ -176,8 +177,9 @@ const NewProject = ({ onSubmitForm }: { onSubmitForm: (data: FormValues) => void
             <FormItem>
               <FormLabel>A brief description of the project</FormLabel>
               <FormControl>
-                <Input {...field} type="text" variant="form"
-                />
+                {/* <Input {...field} type="text" variant="form"
+                /> */}
+                <Textarea {...field} className="form-textarea" />
               </FormControl>
               <FormMessage>{errors.shortDescription?.message}</FormMessage>
             </FormItem>

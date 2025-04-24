@@ -1,18 +1,19 @@
 "use client";
 import NewProject from "@/components/ui/NewProject";
 import { useState } from "react";
+import { FormValues } from "@/components/ui/NewProject";
 
 export default function NewProjectClient() {
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<FormValues>({
         title: "",
         shortDescription: "",
         objective: "",
-        requiredSkills: "",
-        usedTechnologies: "",
-        documentPDFs: ""
+        requiredSkills: [],
+        usedTechnologies: [],
+        documentPDFs: []
     });
 
-    const handleSubmit = async (formData: any) => {
+    const handleSubmit = async (formData: FormValues) => {
         try {
             const projectData = {
                 title: formData.title,
