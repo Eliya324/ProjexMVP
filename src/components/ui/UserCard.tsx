@@ -16,13 +16,6 @@ const UserCard = () => {
       "Node.js",
       "c#",
       "python",
-      "Node.js",
-      "c#",
-      "python",
-      "python",
-      "Node.js",
-      "c#",
-      "python",
     ],
     experience: "5+ Years",
   };
