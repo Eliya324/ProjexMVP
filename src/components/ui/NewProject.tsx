@@ -94,6 +94,8 @@ const NewProject = ({ onSubmitForm }: { onSubmitForm: (data: FormValues) => void
                   {...field}
                   type="text"
                   variant="form"
+                  value={field.value || ""}
+                  onChange={field.onChange}
                 />
               </FormControl>
               <FormMessage>{errors.title?.message}</FormMessage>
@@ -111,6 +113,8 @@ const NewProject = ({ onSubmitForm }: { onSubmitForm: (data: FormValues) => void
               <FormControl>
                 <Input {...field}
                   type="text" variant="form"
+                  value={field.value || ""}
+                  onChange={field.onChange}
                 />
               </FormControl>
               <FormMessage>{errors.objective?.message}</FormMessage>
@@ -177,8 +181,6 @@ const NewProject = ({ onSubmitForm }: { onSubmitForm: (data: FormValues) => void
             <FormItem>
               <FormLabel>A brief description of the project</FormLabel>
               <FormControl>
-                {/* <Input {...field} type="text" variant="form"
-                /> */}
                 <Textarea {...field} className="form-textarea" />
               </FormControl>
               <FormMessage>{errors.shortDescription?.message}</FormMessage>
