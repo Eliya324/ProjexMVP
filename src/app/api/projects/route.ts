@@ -30,6 +30,8 @@ function getUserIdOrThrow(req: NextRequest): string {
     return userId;
 }
 
+
+
 export async function POST(req: NextRequest) {
     try {
         const userId = getUserIdOrThrow(req);
@@ -88,3 +90,58 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ message: errorMessage }, { status: 500 });
     }
 }
+
+export async function GET(req: NextRequest) {
+    const { searchParams } = new URL(req.url);
+    const type = searchParams.get("type");
+  
+    if (type === "owned") {
+      const { userId } = getAuth(req);
+      if (!userId) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  
+      const neonUserId = await getNeonIdFromClerkId(userId);
+      const ownedProjects = await prisma.project.findMany({
+        where: { ownerId: neonUserId },
+        include: {
+          ratings: true,
+          relationships: { include: { user: true } },
+        },
+      });
+  
+      return NextResponse.json(ownedProjects);
+    }
+
+    if (type === "member") {
+        const { userId } = getAuth(req);
+        if (!userId) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      
+        const neonUserId = await getNeonIdFromClerkId(userId);
+        const membershipProjects = await prisma.project.findMany({
+          where: {
+            relationships: {
+              some: {
+                userId: neonUserId,
+              },
+            },
+          },
+          include: {
+            ratings: true,
+            relationships: { include: { user: true } },
+          },
+        });
+      
+        return NextResponse.json(membershipProjects);
+      }
+      
+  
+    // fallback - get all projects
+    const projects = await prisma.project.findMany({
+      include: {
+        ratings: true,
+        relationships: { include: { user: true } },
+      },
+    });
+  
+    return NextResponse.json(projects);
+  }
+  
