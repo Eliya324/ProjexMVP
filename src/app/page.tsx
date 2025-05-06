@@ -2,6 +2,7 @@ import ProjectCard from "@/components/ui/ProjectCard";
 import UserCard from "@/components/ui/UserCard";
 import Image from "next/image";
 import HomePage from "@/components/ui/HomePage";
+import ProjectProfile from "@/components/ui/ProjectProfile";
 export default function Home() {
   return (
     <div>
@@ -9,7 +10,8 @@ export default function Home() {
         {" "}
         {/* <ProjectCard />
         <UserCard /> */}
-        <HomePage />
+        {/* <HomePage /> */}
+        <ProjectProfile/>
       </div>
     </div>
   );
