@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { FaEdit } from "react-icons/fa";
-
+import { useTalent } from "../../contexts/TalentContext";
 
 const educationSchema = z.object({
     educations: z.array(
@@ -20,24 +20,27 @@ const educationSchema = z.object({
 });
 
 type EducationFormValues = z.infer<typeof educationSchema>;
+type Education = EducationFormValues["educations"][number];
 
 export default function Step3Form({
     formData,
     updateFormData,
     onNext,
     onPrev,
+    isRegistration,
 }: {
     formData: any;
     updateFormData: any;
-    onNext: () => void;
+    onNext: (updatedEducations?: EducationFormValues["educations"]) => void;
     onPrev: () => void;
+    isRegistration: boolean;
 }) {
-    const { register, control, handleSubmit, watch } = useForm<EducationFormValues>({
+    const { education, setEducation } = useTalent();
+    console.log("isRegistration", isRegistration)
+    const { register, control, handleSubmit, watch, reset } = useForm<EducationFormValues>({
         resolver: zodResolver(educationSchema),
         defaultValues: {
-            educations: formData.educations?.length > 0
-                ? formData.educations
-                : [{ institution: "", degree: "", startDate: "", endDate: "", description: "" }]
+            educations: education.length > 0 ? education : [{ institution: "", degree: "", startDate: "", endDate: "", description: "" }]
         }
     });
 
@@ -52,21 +55,49 @@ export default function Step3Form({
         }
     }, [fields]);
 
-    const onSubmit = (data: EducationFormValues) => {
-        updateFormData({
-            educations: data.educations,
+    useEffect(() => {
+        const formattedEducation = education.map((edu: Education) => ({
+            ...edu,
+            startDate: edu.startDate?.split("T")[0] || "",
+            endDate: edu.endDate?.split("T")[0] || "",
+        }));
+
+        reset({
+            educations: education.length > 0
+                ? formattedEducation
+                : [{
+                    institution: "", degree: "", startDate: "", endDate: "", description: ""
+                }]
         });
-        onNext();
+
+        setExpandedIndex(education.length > 0 ? education.length - 1 : 0);
+    }, [education]);
+
+
+    const onSubmit = (data: EducationFormValues) => {
+        if (!isRegistration) {
+            setEducation(data.educations);
+            onNext(data.educations);
+        } else {
+            updateFormData({
+                educations: data.educations,
+            });
+            onNext();
+        }
     };
 
 
 
     return (
+
         <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-2xl mt-6 space-y-6">
+
             <h2 className="text-3xl font-semibold text-violet-900">Education</h2>
-            <p className="text-center text-gray-600 mt-2">
-                Build your profile to discover opportunities that match your talents.
-            </p>
+            {!isRegistration && (
+                <p className="text-center text-gray-600 mt-2">
+                    Build your profile to discover opportunities that match your talents.
+                </p>
+            )}
 
             {fields.map((field, index) => {
                 // Watch for real-time updates on start and end dates
@@ -147,11 +178,12 @@ export default function Step3Form({
             </button>
             {/* Navigation buttons */}
             <div className="flex justify-between mt-6">
-                <button type="button" className="px-4 py-2 border border-gray-400 text-gray-600 rounded-md" onClick={onPrev}>
+                {isRegistration && <button type="button" className="px-4 py-2 border border-gray-400 text-gray-600 rounded-md" onClick={onPrev}>
                     Prev
                 </button>
+                }
                 <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                    Next
+                    {isRegistration ? 'Next' : 'Update'}
                 </button>
             </div>
         </form>

@@ -7,8 +7,15 @@ const nextConfig = {
                 hostname: 'placehold.co',
             },
         ],
-        dangerouslyAllowSVG: true, 
+        dangerouslyAllowSVG: true,
         contentSecurityPolicy: "default-src 'self'; img-src *; media-src *; script-src 'none'; sandbox;", // שיפור אבטחה
+    },
+    webpack(config) {
+        config.module.rules.push({
+            test: /\.svg$/,
+            use: ["@svgr/webpack"],
+        });
+        return config;
     },
 };
 

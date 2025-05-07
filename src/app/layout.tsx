@@ -6,6 +6,7 @@ import "./globals.css";
 import Navbar from "@/components/ui/Navbar";
 import { TailwindIndicator } from "@/components/ui/tailwind-indicator";
 import ClientNavbar from "@/components/ui/ClientNavbar";
+import { TalentProvider } from "@/contexts/TalentContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,9 +34,11 @@ export default function RootLayout({
     <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
       <html lang="en">
         <body className="antialiased">
+        <TalentProvider>
          <ClientNavbar />
           {children}
           <TailwindIndicator />
+          </TalentProvider>
         </body>
       </html>
     </ClerkProvider>

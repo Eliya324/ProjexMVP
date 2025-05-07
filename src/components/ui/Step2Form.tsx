@@ -1,10 +1,11 @@
 
 "use client";
 import { useForm, useFieldArray } from "react-hook-form";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { FaEdit } from "react-icons/fa";
+import { useTalent } from "@/contexts/TalentContext";
 
 // Schema Validation
 const experienceSchema = z.object({
@@ -20,28 +21,33 @@ const experienceSchema = z.object({
 });
 
 type ExperienceFormValues = z.infer<typeof experienceSchema>;
+type ProfessionalExperience = ExperienceFormValues["professionalExperiences"][number];
 
 export default function Step2Form({
     formData,
     updateFormData,
     onNext,
     onPrev,
+    isRegistration,
 }: {
     formData: any;
     updateFormData: any;
-    onNext: () => void;
+    onNext: (updatedExperiences?: ExperienceFormValues["professionalExperiences"]) => void;
     onPrev: () => void;
+    isRegistration: boolean;
 }) {
-    const { register, control, handleSubmit, watch, setValue } = useForm<ExperienceFormValues>({
+    const { experience, setExperience } = useTalent();
+
+    const { register, control, handleSubmit, watch, setValue, reset } = useForm<ExperienceFormValues>({
         resolver: zodResolver(experienceSchema),
         defaultValues: {
             professionalExperiences: formData.professionalExperiences.length
-            ? formData.professionalExperiences
-            : [{ jobTitle: "", company: "", startDate: "", endDate: "", description: "" }],
+                ? formData.professionalExperiences
+                : [{ jobTitle: "", company: "", startDate: "", endDate: "", description: "" }],
         },
-        
+
     });
- 
+
     const { fields, append, remove } = useFieldArray({ control, name: "professionalExperiences" });
     const [expandedIndex, setExpandedIndex] = useState(-1);
 
@@ -61,33 +67,52 @@ export default function Step2Form({
             setExpandedIndex(0);
         }
     }, [fields]);
-    
+
     /////-------------
     useEffect(() => {
-        console.log("🔥 Updated formData:", formData);
-    }, [formData]); // ירוץ כל פעם שהסטייט משתנה
+        console.log("Updated formData:", formData);
+    }, [formData])
+
+    useEffect(() => {
+        const formattedExperience = experience.map((exp: ProfessionalExperience) => ({
+            ...exp,
+            startDate: exp.startDate?.split("T")[0] || "",
+            endDate: exp.endDate?.split("T")[0] || "",
+          }));          
+        reset({
+            professionalExperiences: experience.length > 0 ? formattedExperience : [{
+                jobTitle: "", company: "", startDate: "", endDate: "", description: ""
+            }]
+        });
+    
+        setExpandedIndex(experience.length > 0 ? experience.length - 1 : 0);
+    }, [experience]);
     
 
-        const onSubmit = (data: ExperienceFormValues) => {
-            console.log("Full form data:", data);
-            console.log("professionalExperiences before update:", formData.professionalExperiences);
+    const onSubmit = (data: ExperienceFormValues) => {
+        console.log("professionalExperiences before update:", formData.professionalExperiences);
+        if (!isRegistration) {
+            setExperience(data.professionalExperiences);
+            onNext(data.professionalExperiences);
+        } else {
             updateFormData({ professionalExperiences: data.professionalExperiences });
-            console.log("professionalExperiences after update:", formData.professionalExperiences);
             onNext();
-        };
+        }
+    };
 
     const handleCurrentlyWorking = (index: number) => {
         setValue(`professionalExperiences.${index}.endDate`, ""); // Ensure the max date is always today
     };
 
     return (
-            <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-2xl mt-6 space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-2xl mt-6 space-y-6">
             <h2 className="text-3xl font-semibold text-violet-900">Professional Experience</h2>
-            <p className="text-center text-gray-600 mt-2">
+            {!isRegistration && < p className="text-center text-gray-600 mt-2">
                 You can add your work experience or skip this step.
-            </p>
+            </p>}
 
-                {fields.map((field, index) => {
+            {
+                fields.map((field, index) => {
                     const startDate = watch(`professionalExperiences.${index}.startDate`);
                     const endDate = watch(`professionalExperiences.${index}.endDate`);
                     const showError = startDate && endDate && startDate > endDate;
@@ -177,27 +202,29 @@ export default function Step2Form({
                             )}
                         </div>
                     );
-                })}
+                })
+            }
 
-                <button
-                    type="button"
-                    className="flex items-center justify-center w-full border rounded-md p-2 bg-gray-100 hover:bg-gray-200"
-                    onClick={() => {
-                        append({ jobTitle: "", company: "", startDate: "", endDate: "", description: "" });
-                        setExpandedIndex(fields.length);
-                    }}
-                >
-                    + Add Another Experience
+            <button
+                type="button"
+                className="flex items-center justify-center w-full border rounded-md p-2 bg-gray-100 hover:bg-gray-200"
+                onClick={() => {
+                    append({ jobTitle: "", company: "", startDate: "", endDate: "", description: "" });
+                    setExpandedIndex(fields.length);
+                }}
+            >
+                + Add Another Experience
+            </button>
+
+            <div className="flex justify-between mt-6">
+                {isRegistration && <button type="button" className="px-4 py-2 border border-gray-400 text-gray-600 rounded-md" onClick={onPrev}>
+                    Prev
                 </button>
-
-                <div className="flex justify-between mt-6">
-                    <button type="button" className="px-4 py-2 border border-gray-400 text-gray-600 rounded-md" onClick={onPrev}>
-                        Prev
-                    </button>
-                    <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                        Next
-                    </button>
-                </div>
-            </form>
+                }
+                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    {isRegistration ? 'Next' : 'Update'}
+                </button>
+            </div>
+        </form >
     );
 }

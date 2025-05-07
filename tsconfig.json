@@ -33,7 +33,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts", "src/app/api/register/route.js"
-, "src/app/api/projects/route.ts"  ],
+, "src/app/api/projects/route.ts", "src/contexts/TalentContext.tsx", "src/app/experience/page.jsx"  ],
   "exclude": [
     "node_modules"
   ]
