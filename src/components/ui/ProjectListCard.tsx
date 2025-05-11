@@ -17,6 +17,7 @@ export function ProjectListCard({
   status,
   members,
 }: ProjectListCard) {
+  //Testing to see what the profiles look like using a fake variable-totalMembers
   const totalMembers = 7;
   return (
     <Card className="w-full max-w-[1016px] max-sm:h-[30vh] sm:h-[32vh] h-[270px] p-6 mb-6  shadow-md mx-auto relative ">
