@@ -88,3 +88,17 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ message: errorMessage }, { status: 500 });
     }
 }
+
+export async function GET(req: NextRequest) {
+    try {} catch (error: unknown) {}
+}
+
+export async function PUT(req: NextRequest) {
+    try {} catch (error: unknown) {}
+}
+
+export async function DELETE(req: NextRequest) {
+    try {} catch (error: unknown) {}
+}
+
+
