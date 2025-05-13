@@ -3,7 +3,7 @@ import { MapPin } from "lucide-react";
 import { useUser } from '@clerk/nextjs'
 import StarFull from '../../../public/star-full.svg';
 import StarEmpty from '../../../public/star-empty.svg';
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from 'next/link';
 import { useEffect, useState } from "react";
@@ -418,7 +418,7 @@ export default function TalentProfile() {
           }
         </div>
 
-      
+
         {fullUser.educations && fullUser.educations.length > 0 ? (
           fullUser.educations.map((edu) => (
             <Card key={edu.id}>
@@ -435,7 +435,7 @@ export default function TalentProfile() {
             </Card>
           ))
         ) : (
-          <div>No education data available</div> 
+          <div>No education data available</div>
         )}
       </section>
 
