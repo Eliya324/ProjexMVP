@@ -55,7 +55,7 @@ export async function PUT(req) {
         const { field, value } = body;
         console.log("body", body);
 
-        if (!field || !value) {
+        if (!field || value === undefined || value === null) {
             return NextResponse.json({ error: "Field and value are required" }, { status: 400 });
         }
 

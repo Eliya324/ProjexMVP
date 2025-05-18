@@ -84,7 +84,7 @@ const EditableField: React.FC<EditableFieldProps> = ({
       title={isEditing ? "Click to edit" : ""}
     >
       <span className={className}>
-        {value || placeholder || "Click to edit"}
+        {value || ""}
       </span>
     </div>
   );

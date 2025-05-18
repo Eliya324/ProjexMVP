@@ -38,7 +38,7 @@ const interests = ["j", "nm", " cd", "hbjn", "jn"];
 
 //Only for checking-Insert the email of the man you want to watch him.
 // In the futer this page will get this parameter 
-const email = "chayalegut@gmail.com";
+const email = "***@gmail.com";
 
 export default function TalentProfile() {
   const [fullUser, setFullUser] = useState<FullUser | null>(null);
@@ -46,6 +46,7 @@ export default function TalentProfile() {
   const [isEditing, setIsEditing] = useState(false);
   const [friendRelationship, setFriendRelationship] = useState<Relationship | undefined>(undefined);
   const [followerRelationship, setFollowerRelationship] = useState<Relationship | undefined>(undefined);
+  const [notFound, setNotFound] = useState(false);
   const { user } = useUser();
 
 
@@ -56,6 +57,10 @@ export default function TalentProfile() {
       const res = await fetch(`/api/profile?email=${email}`);
       const data = await res.json();
       console.log("data", data);
+      if (!res.ok || !data || !data.id) {
+        setNotFound(true);
+        return;
+      }
       setFullUser(data);
       if (data.educations) setEducation(data.educations);
       if (data.professionalExperiences) setExperience(data.professionalExperiences);
@@ -217,6 +222,13 @@ export default function TalentProfile() {
     }
   };
 
+  if (notFound) {
+    return (
+      <div className="text-center mt-20 text-red-600 text-xl font-semibold">
+          Sorry,The user wasnt found.
+      </div>
+    );
+  }
   if (!fullUser) {
     return <div>Loading...</div>;
   }
