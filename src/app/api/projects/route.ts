@@ -88,3 +88,22 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ message: errorMessage }, { status: 500 });
     }
 }
+
+// // app/api/posts/route.ts
+// export async function GET() {
+//     try {
+//       const posts = await prisma.post.findMany({
+//         include: {
+//           author: true,
+//           likes: true,
+//           comments: true,
+//         },
+//         orderBy: { createdAt: "desc" },
+//       });
+  
+//       return NextResponse.json(posts);
+//     } catch (error) {
+//       console.error(error);
+//       return new NextResponse("Failed to load posts", { status: 500 });
+//     }
+//   }
