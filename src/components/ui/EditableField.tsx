@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button } from "./button";
+import { Button } from "./Button";
 
 type EditableFieldProps = {
   value: string;
@@ -40,7 +40,7 @@ const EditableField: React.FC<EditableFieldProps> = ({
 
   const handleClick = () => {
     if (isEditing) {
-      setTempValue(value);
+      setTempValue(value.trim() == "" ? "" : value);
       setIsFocused(true);
     }
   };
@@ -58,7 +58,7 @@ const EditableField: React.FC<EditableFieldProps> = ({
           placeholder={placeholder}
         />
         <Button
-          onClick={() => () => {
+          onClick={() => {
             onUpdateField(fieldName, tempValue.trim());
             setIsFocused(false);
           }}
@@ -84,7 +84,7 @@ const EditableField: React.FC<EditableFieldProps> = ({
       title={isEditing ? "Click to edit" : ""}
     >
       <span className={className}>
-        {value || ""}
+        {value || (isEditing ? placeholder : "")}
       </span>
     </div>
   );

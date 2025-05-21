@@ -37,13 +37,31 @@ export default function Step2Form({
     isRegistration: boolean;
 }) {
     const { experience, setExperience } = useTalent();
+    const sourceData = isRegistration
+        ? formData.professionalExperiences
+        : experience;
 
-    const { register, control, handleSubmit, watch, setValue, reset } = useForm<ExperienceFormValues>({
+    const defaultData = sourceData && sourceData.length
+        ? sourceData.map((exp: ProfessionalExperience) => ({
+            ...exp,
+            startDate: exp.startDate?.split("T")[0] || "",
+            endDate: exp.endDate?.split("T")[0] || "",
+        }))
+        : [
+            {
+                jobTitle: "",
+                company: "",
+                startDate: "",
+                endDate: "",
+                description: "",
+            },
+        ];
+
+
+    const { register, control, handleSubmit, watch, setValue, reset,getValues } = useForm<ExperienceFormValues>({
         resolver: zodResolver(experienceSchema),
         defaultValues: {
-            professionalExperiences: formData.professionalExperiences.length
-                ? formData.professionalExperiences
-                : [{ jobTitle: "", company: "", startDate: "", endDate: "", description: "" }],
+            professionalExperiences: defaultData,
         },
 
     });
@@ -68,26 +86,33 @@ export default function Step2Form({
         }
     }, [fields]);
 
-    /////-------------
-    useEffect(() => {
-        console.log("Updated formData:", formData);
-    }, [formData])
+
 
     useEffect(() => {
-        const formattedExperience = experience.map((exp: ProfessionalExperience) => ({
-            ...exp,
-            startDate: exp.startDate?.split("T")[0] || "",
-            endDate: exp.endDate?.split("T")[0] || "",
-          }));          
+        console.log("formData", formData);
+        let source = isRegistration ? formData.professionalExperiences : experience;
+        const formatted = source && source.length > 0
+            ? source.map((exp: ProfessionalExperience) => ({
+                ...exp,
+                startDate: exp.startDate?.split("T")[0] || "",
+                endDate: exp.endDate?.split("T")[0] || "",
+            }))
+            : [{
+                jobTitle: "",
+                company: "",
+                startDate: "",
+                endDate: "",
+                description: "",
+            }];
+
         reset({
-            professionalExperiences: experience.length > 0 ? formattedExperience : [{
-                jobTitle: "", company: "", startDate: "", endDate: "", description: ""
-            }]
+            professionalExperiences: formatted,
         });
-    
-        setExpandedIndex(experience.length > 0 ? experience.length - 1 : 0);
-    }, [experience]);
-    
+
+        setExpandedIndex(formatted.length > 0 ? formatted.length - 1 : 0);
+    }, [formData, experience, isRegistration, reset]);
+
+
 
     const onSubmit = (data: ExperienceFormValues) => {
         console.log("professionalExperiences before update:", formData.professionalExperiences);
@@ -99,6 +124,11 @@ export default function Step2Form({
             onNext();
         }
     };
+    const handlePrev = () => {
+        const currentData = getValues(); 
+        updateFormData({ professionalExperiences: currentData.professionalExperiences });
+        onPrev();
+    }; 
 
     const handleCurrentlyWorking = (index: number) => {
         setValue(`professionalExperiences.${index}.endDate`, ""); // Ensure the max date is always today
@@ -194,7 +224,18 @@ export default function Step2Form({
                                     </div>
 
                                     {fields.length > 1 && (
-                                        <button type="button" className="mt-4 text-black-600 hover:text-red-800 text-sm" onClick={() => remove(index)}>
+                                        <button
+                                            type="button"
+                                            className="mt-4 text-black-600 hover:text-red-800 text-sm"
+                                            onClick={() => {
+                                                remove(index);
+                                                if (expandedIndex === index) {
+                                                    setExpandedIndex(-1);
+                                                } else if (expandedIndex > index) {
+                                                    setExpandedIndex(expandedIndex - 1);
+                                                }
+                                            }}
+                                        >
                                             Remove Experience
                                         </button>
                                     )}
@@ -217,7 +258,7 @@ export default function Step2Form({
             </button>
 
             <div className="flex justify-between mt-6">
-                {isRegistration && <button type="button" className="px-4 py-2 border border-gray-400 text-gray-600 rounded-md" onClick={onPrev}>
+                {isRegistration && <button type="button" className="px-4 py-2 border border-gray-400 text-gray-600 rounded-md" onClick={handlePrev}>
                     Prev
                 </button>
                 }

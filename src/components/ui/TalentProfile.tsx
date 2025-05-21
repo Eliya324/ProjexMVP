@@ -13,7 +13,6 @@ import EditableField from "./EditableField";
 import SkillsSection from "./SkillsSection";
 import ProfilePicture from "./ProfilePicture";
 import EditableArrayField from "./EditableArrayField";
-import { getNeonIdFromClerkId } from "@/lib/clerkToNeon";
 
 
 const fullUserWithRelations = {
@@ -36,11 +35,7 @@ const languages = ["English", "Spanish", "Hebrew", "French", "German"];
 
 const interests = ["j", "nm", " cd", "hbjn", "jn"];
 
-//Only for checking-Insert the email of the man you want to watch him.
-// In the futer this page will get this parameter 
-const email = "***@gmail.com";
-
-export default function TalentProfile() {
+export default function TalentProfile({ email }: { email: string }) {
   const [fullUser, setFullUser] = useState<FullUser | null>(null);
   const { setEducation, setExperience } = useTalent();
   const [isEditing, setIsEditing] = useState(false);
@@ -54,6 +49,7 @@ export default function TalentProfile() {
 
   useEffect(() => {
     async function fetchUser() {
+      console.log("email", email);
       const res = await fetch(`/api/profile?email=${email}`);
       const data = await res.json();
       console.log("data", data);
@@ -67,7 +63,7 @@ export default function TalentProfile() {
     }
 
     fetchUser();
-  }, []);
+  }, [email]);
 
 
   useEffect(() => {
@@ -225,7 +221,7 @@ export default function TalentProfile() {
   if (notFound) {
     return (
       <div className="text-center mt-20 text-red-600 text-xl font-semibold">
-          Sorry,The user wasnt found.
+        Sorry,The user wasnt found.
       </div>
     );
   }
@@ -347,8 +343,7 @@ export default function TalentProfile() {
           isMultiline={true}
           fieldName="personalSummary"
           onUpdateField={updateUserField}
-          placeholder="לחץ כאן כדי לספר עליך קצת"
-          className="text-sm text-gray-800 whitespace-pre-line"
+          placeholder={isEditing && !fullUser.personalSummary ? "☺️ לחץ כדי לספר עליך קצת" : ""} className="text-sm text-gray-800 whitespace-pre-line"
         />
       </section>
 

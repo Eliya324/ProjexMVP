@@ -1,9 +1,9 @@
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { NextResponse,NextRequest } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { getNeonIdFromClerkId } from "@/lib/clerkToNeon";
 
-export async function POST(req) {
+export async function POST(req:NextRequest) {
   try {
     const { userId } = await auth();
     if (!userId) {

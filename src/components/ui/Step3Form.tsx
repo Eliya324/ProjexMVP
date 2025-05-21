@@ -37,10 +37,22 @@ export default function Step3Form({
 }) {
     const { education, setEducation } = useTalent();
     console.log("isRegistration", isRegistration)
-    const { register, control, handleSubmit, watch, reset } = useForm<EducationFormValues>({
+    const sourceData = isRegistration
+        ? formData.educations
+        : education;
+
+    const defaultData = sourceData && sourceData.length
+        ? sourceData.map((edu: Education) => ({
+            ...edu,
+            startDate: edu.startDate?.split("T")[0] || "",
+            endDate: edu.endDate?.split("T")[0] || "",
+        }))
+        :[{ institution: "", degree: "", startDate: "", endDate: "", description: "" }]
+
+        const { register, control, handleSubmit, watch, reset,getValues } = useForm<EducationFormValues>({
         resolver: zodResolver(educationSchema),
         defaultValues: {
-            educations: education.length > 0 ? education : [{ institution: "", degree: "", startDate: "", endDate: "", description: "" }]
+            educations: defaultData,
         }
     });
 
@@ -56,22 +68,28 @@ export default function Step3Form({
     }, [fields]);
 
     useEffect(() => {
-        const formattedEducation = education.map((edu: Education) => ({
-            ...edu,
-            startDate: edu.startDate?.split("T")[0] || "",
-            endDate: edu.endDate?.split("T")[0] || "",
-        }));
-
+        console.log("formData", formData);
+        let source = isRegistration ? formData.educations : education;
+        const formattedEducation = source && source.length > 0
+            ? source.map((edu: Education) => ({
+                ...edu,
+                startDate: edu.startDate?.split("T")[0] || "",
+                endDate: edu.endDate?.split("T")[0] || "",
+            }))
+            : [{
+                jobTitle: "",
+                company: "",
+                startDate: "",
+                endDate: "",
+                description: "",
+            }];
         reset({
-            educations: education.length > 0
-                ? formattedEducation
-                : [{
-                    institution: "", degree: "", startDate: "", endDate: "", description: ""
-                }]
+            educations: formattedEducation,
         });
 
-        setExpandedIndex(education.length > 0 ? education.length - 1 : 0);
-    }, [education]);
+
+        setExpandedIndex(formattedEducation.length > 0 ? formattedEducation.length - 1 : 0);
+    }, [formData, education, isRegistration, reset]);
 
 
     const onSubmit = (data: EducationFormValues) => {
@@ -85,6 +103,12 @@ export default function Step3Form({
             onNext();
         }
     };
+
+     const handlePrev = () => {
+        const currentData = getValues(); 
+        updateFormData({ educations: currentData.educations });
+        onPrev();
+    }; 
 
 
 
@@ -154,7 +178,18 @@ export default function Step3Form({
                                 </div>
                                 {/* Show remove button only if there is more than one education entry */}
                                 {fields.length > 1 && (
-                                    <button type="button" className="mt-4 text-red-600 hover:text-red-800 text-sm" onClick={() => remove(index)}>
+                                    <button
+                                        type="button"
+                                        className="mt-4 text-black-600 hover:text-red-800 text-sm"
+                                        onClick={() => {
+                                            remove(index);
+                                            if (expandedIndex === index) {
+                                                setExpandedIndex(-1);
+                                            } else if (expandedIndex > index) {
+                                                setExpandedIndex(expandedIndex - 1);
+                                            }
+                                        }}
+                                    >
                                         Remove Education
                                     </button>
                                 )}
@@ -178,7 +213,7 @@ export default function Step3Form({
             </button>
             {/* Navigation buttons */}
             <div className="flex justify-between mt-6">
-                {isRegistration && <button type="button" className="px-4 py-2 border border-gray-400 text-gray-600 rounded-md" onClick={onPrev}>
+                {isRegistration && <button type="button" className="px-4 py-2 border border-gray-400 text-gray-600 rounded-md" onClick={handlePrev}>
                     Prev
                 </button>
                 }

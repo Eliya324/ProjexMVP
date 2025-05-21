@@ -4,6 +4,7 @@
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation";
+import { Button } from "./Button";
 
 export default function AuthButtons() {
     const { isSignedIn, user, isLoaded } = useUser();
@@ -39,9 +40,9 @@ export default function AuthButtons() {
                         .catch((err) => console.error("Failed to register:", err));
                 }
             }
-            
+
         }
-        
+
     }, [isSignedIn, user, isLoaded, hasRegistered]);
 
 
@@ -57,6 +58,11 @@ export default function AuthButtons() {
             {/* Profile button for those who are logged in */}
             <SignedIn>
                 <UserButton />
+                {/* To edit and see personal details*/}
+                <Button
+                    onClick={() => router.push("/profile")}>
+                    My Details        
+                </Button>
             </SignedIn>
         </>
     );
