@@ -14,7 +14,7 @@ type Project = {
   title: string;
 };
 
-export default function AddPosts({ onClose }: AddPostsProps) {
+export default function AddPost({ onClose }: AddPostsProps) {
   const [postContent, setPostContent] = useState("");
   const [isInputActive, setIsInputActive] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -97,13 +97,13 @@ export default function AddPosts({ onClose }: AddPostsProps) {
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      console.log("תמונה שנבחרה:", file);
+      console.log("Selected image:", file);
     }
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm overflow-hidden">
-      <div className="max-sm:w-[500px] sm:w-[600px] md:w-[700px]  lg:w-[750px] h-[520px] bg-white rounded-[40px] p-10 relative flex flex-col">
+      <div className="max-sm:w-[480px] sm:w-[600px] md:w-[700px]  lg:w-[750px] h-[520px] bg-white rounded-[40px] p-10 relative flex flex-col">
         <button
           onClick={onClose}
           className="absolute top-6 right-6 text-xl font-bold text-gray-500 hover:text-black z-20"
@@ -111,7 +111,7 @@ export default function AddPosts({ onClose }: AddPostsProps) {
           ✕
         </button>
 
-        {/* פרטי משתמש + בחירת פרויקט */}
+        {/*User details + project selection*/}
         <div className="absolute top-10 left-10 right-10 flex justify-between items-center z-10">
           <div className="flex items-center space-x-4">
             <img
@@ -124,7 +124,7 @@ export default function AddPosts({ onClose }: AddPostsProps) {
             </div>
           </div>
 
-          {/* בחירת פרויקט */}
+          {/* Project selection*/}
           <div className="relative max-w-[200px] ">
             <select
               className="appearance-none text-violet-800 bg-transparent outline-none pr-10 pl-2 text-lg font-semibold font-['Lato'] cursor-pointer truncate w-full"
@@ -138,14 +138,13 @@ export default function AddPosts({ onClose }: AddPostsProps) {
                 <option
                   key={project.id}
                   value={project.id}
-                  title={project.title} // מציג טול־טיפ עם שם מלא
+                  title={project.title}
                 >
                   {project.title}
                 </option>
               ))}
             </select>
 
-            {/* חץ שממוקם על בסיס absolute בלי להידחף ע"י טקסט */}
             <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
               <svg
                 className="w-4 h-4 text-violet-800"
@@ -167,8 +166,7 @@ export default function AddPosts({ onClose }: AddPostsProps) {
 
         <div className="h-24" />
 
-        {/* אזור טקסט */}
-        {/* אזור טקסט עם Tooltip כאשר אין פרויקט */}
+        {/* Text area with tooltip when no project is selected*/}
         <div
           className={`w-full h-[360px] overflow-y-auto overflow-x-hidden mb-6 border-b-2 ${
             selectedProjectId
@@ -190,7 +188,7 @@ export default function AddPosts({ onClose }: AddPostsProps) {
             </div>
           )}
 
-          {/* Tooltip מותאם כאשר לא נבחר פרויקט */}
+          {/* Custom tooltip when no project is selected*/}
           {!selectedProjectId && (
             <div className="absolute top-2 left-2 bg-black text-white text-sm px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
               Choose a project before writing a post.{" "}
@@ -204,7 +202,7 @@ export default function AddPosts({ onClose }: AddPostsProps) {
           )}
         </div>
 
-        {/* אייקונים + כפתור */}
+        {/*Icons + button*/}
         <div className="flex items-center justify-between">
           <div className="flex space-x-6">
             <div

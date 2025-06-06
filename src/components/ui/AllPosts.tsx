@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Image as ImageIcon, CirclePlay } from "lucide-react";
 import PostCard from "./PostCard";
-import AddPosts from "./addPosts";
 import { useUser } from "@clerk/nextjs";
+import AddPosts from "./AddPosts";
 
 export type Post = {
   id: string;
@@ -74,7 +74,7 @@ export default function AllPostsPage({ projectId }: { projectId: string }) {
   }, [isPostModalOpen]);
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 pt-24">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 pt-24 overflow-x-hidden">
       {isPostModalOpen && (
         <div className="fixed inset-0 bg-black/40 z-40 backdrop-blur-sm transition-all duration-300" />
       )}
@@ -84,9 +84,9 @@ export default function AllPostsPage({ projectId }: { projectId: string }) {
           isPostModalOpen ? "pointer-events-none blur-sm brightness-75" : ""
         }`}
       >
-        {/* עטיפה כוללת לתמונה+כפתור ולאייקונים */}
+        {/* Full wrapper for image + button for icons*/}
         <div className="max-sm:pl-16 sm:pl-2 sm:w-[550px] md:w-[650px] xl:w-[750px] mx-auto space-y-2">
-          {/* שורה עם תמונת פרופיל וכפתור */}
+          {/* Row with profile picture and button*/}
           <div className="flex items-center space-x-4">
             <Image
               src={user?.imageUrl || "/default-user.png"}
@@ -108,7 +108,7 @@ export default function AllPostsPage({ projectId }: { projectId: string }) {
             </button>
           </div>
 
-          {/* שורה עם כפתורי אייקון */}
+          {/* Row with icon buttons*/}
           <div className="flex items-center space-x-10">
             <button className="flex items-center space-x-2">
               <CirclePlay className="w-4 h-4" />
@@ -123,7 +123,7 @@ export default function AllPostsPage({ projectId }: { projectId: string }) {
 
         <div className="w-full h-[3px] bg-black/30 my-6" />
 
-        {/* תוכן הפוסטים */}
+        {/* Post content*/}
         {loading ? (
           <p className="text-center text-xl text-gray-500 mt-10">
             Loading posts...
@@ -146,7 +146,7 @@ export default function AllPostsPage({ projectId }: { projectId: string }) {
         )}
       </div>
 
-      {/* מודל פתיחת פוסט */}
+      {/*Post creation modal*/}
       {isPostModalOpen && (
         <div className="fixed inset-0 z-50 flex justify-center items-start pt-32">
           <AddPosts
