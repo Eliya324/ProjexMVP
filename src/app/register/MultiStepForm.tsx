@@ -103,8 +103,8 @@ useEffect(() => {
 
       <div className="mt-10 w-full max-w-2xl">
         {step === 1 && <Step1Form formData={formData} updateFormData={updateFormData} onNext={nextStep} />}
-        {step === 2 && <Step2Form formData={formData} updateFormData={updateFormData} onNext={nextStep} onPrev={prevStep} />}
-        {step === 3 && <Step3Form formData={formData} updateFormData={updateFormData} onNext={nextStep} onPrev={prevStep} />}
+        {step === 2 && <Step2Form formData={formData} updateFormData={updateFormData} onNext={nextStep} onPrev={prevStep}  isRegistration={true}/>}
+        {step === 3 && <Step3Form formData={formData} updateFormData={updateFormData} onNext={nextStep} onPrev={prevStep}  isRegistration={true}/>}
 
       </div>
     </div>

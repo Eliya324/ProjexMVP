@@ -1,8 +1,10 @@
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
-import { getAuth, clerkClient } from '@clerk/nextjs/server'
+import { NextResponse, NextRequest } from "next/server";
+import { getAuth, clerkClient, auth } from '@clerk/nextjs/server'
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
+import { getNeonIdFromClerkId } from "@/lib/clerkToNeon";
 
-export async function POST(req) {
+export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
         const { username, email } = body
@@ -22,9 +24,9 @@ export async function POST(req) {
         // create user
         const newUser = await prisma.user.create({
             data: {
-                username: username??email.split('@')[0],
+                username: username ?? email.split('@')[0],
                 email,
-                fullName: username??email.split('@')[0]
+                fullName: username ?? email.split('@')[0]
             }
         })
 
@@ -41,42 +43,24 @@ export async function POST(req) {
     }
 }
 
-export async function PUT(req) {
+export async function PUT(req: NextRequest) {
     try {
-        //get the userId from clerck
-        const { userId } = getAuth(req)
+        const { userId } = await auth();
 
-        // Protect the route by checking if the user is signed in
         if (!userId) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        // Initialize the Backend SDK
-        const client = await clerkClient()
+        const neonUserId = await getNeonIdFromClerkId(userId);
 
-        // Get the user's full `Backend User` object
-        const user = await client.users.getUser(userId)
-
-        const email = user.primaryEmailAddress ? user.primaryEmailAddress.emailAddress : null;
-
-        if (!email) {
-            return NextResponse.json({ error: "Email not found" }, { status: 400 });
-        }
-
-        // חיפוש המשתמש ב-Neon לפי אימייל
-        const neonUser = await prisma.user.findUnique({
-            where: { email }
-        });
-
-        if (!neonUser) {
+        if (!neonUserId) {
             return NextResponse.json({ error: "User not found in Neon DB" }, { status: 404 });
         }
 
-        const neonUserId = neonUser.id; // get the real id from db
 
         const data = await req.json();
 
-        const formatDate = (dateString) => dateString ? new Date(dateString) : null;
+        const formatDate = (dateString: any) => dateString ? new Date(dateString) : null;
 
         //update the user
         const updatedUser = await prisma.user.update({
@@ -93,10 +77,10 @@ export async function PUT(req) {
                 educations: true,
             }
         });
-        // Update/create professional experiences
+        //Update/create professional experiences
         await Promise.all(
-            data.professionalExperiences.map(async (exp) => {
-                const commonData = {
+            data.professionalExperiences.map(async (exp: any) => {
+                const commonData: any = {
                     jobTitle: exp.jobTitle,
                     company: exp.company,
                     startDate: formatDate(exp.startDate),
@@ -128,8 +112,8 @@ export async function PUT(req) {
 
         // Update/create educations
         await Promise.all(
-            data.educations.map(async (edu) => {
-                const commonData = {
+            data.educations.map(async (edu: any) => {
+                const commonData: any = {
                     institution: edu.institution,
                     degree: edu.degree,
                     startDate: formatDate(edu.startDate),
@@ -163,7 +147,7 @@ export async function PUT(req) {
     } catch (error) {
         console.error(error);
 
-        if (error instanceof prisma.PrismaClientKnownRequestError) {
+        if (error instanceof PrismaClientKnownRequestError) {
             return NextResponse.json({ error: error.message }, { status: 400 });
         }
 

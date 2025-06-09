@@ -32,9 +32,10 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts", "src/app/api/register/route.js"
-, "src/app/api/projects/route.ts", "src/app/myProjects/page.js"  ],
+    ".next/types/**/*.ts", "src/app/api/register/route.ts"
+, "src/app/api/projects/route.ts", "src/contexts/TalentContext.tsx", "src/app/experience/page.tsx"  ],
   "exclude": [
     "node_modules"
   ]
 }
+    

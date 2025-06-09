@@ -1,11 +1,12 @@
 
 import type { Metadata } from "next";
-import {ClerkProvider } from '@clerk/nextjs'
+import { ClerkProvider } from '@clerk/nextjs'
 import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/components/ui/Navbar";
 import { TailwindIndicator } from "@/components/ui/tailwind-indicator";
 import ClientNavbar from "@/components/ui/ClientNavbar";
+import { TalentProvider } from "@/contexts/TalentContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,14 +31,16 @@ export default function RootLayout({
 }>) {
 
   return (
-    <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
-      <html lang="en">
-        <body className="antialiased">
-         <ClientNavbar />
-          {children}
-          <TailwindIndicator />
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <body className="antialiased">
+        <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
+          <TalentProvider>
+            <ClientNavbar />
+            {children}
+            <TailwindIndicator />
+          </TalentProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }
