@@ -25,7 +25,9 @@ export default function AddPost({ onClose }: AddPostsProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useUser();
-
+  const postAreaStyle = selectedProjectId
+    ? "border-gray-300 focus-within:border-violet-700 text-black/80 cursor-text"
+    : "border-gray-200 text-gray-400 cursor-not-allowed group relative";
   useEffect(() => {
     async function fetchOwnedProjects() {
       try {
@@ -57,8 +59,10 @@ export default function AddPost({ onClose }: AddPostsProps) {
         }),
       });
 
-      if (!res.ok) throw new Error("Failed to create post");
-
+      if (!res.ok) {
+        console.error("Failed to create post");
+        return;
+      }
       setPostContent("");
       onClose();
     } catch (err) {
@@ -168,11 +172,7 @@ export default function AddPost({ onClose }: AddPostsProps) {
 
         {/* Text area with tooltip when no project is selected*/}
         <div
-          className={`w-full h-[360px] overflow-y-auto overflow-x-hidden mb-6 border-b-2 ${
-            selectedProjectId
-              ? "border-gray-300 focus-within:border-violet-700 text-black/80 cursor-text"
-              : "border-gray-200 text-gray-400 cursor-not-allowed group relative"
-          } text-xl font-normal font-['Lato'] tracking-wide px-1 py-2`}
+          className={`w-full h-[360px] overflow-y-auto overflow-x-hidden mb-6 border-b-2 ${postAreaStyle} text-xl font-normal font-['Lato'] tracking-wide px-1 py-2`}
           onClick={() => selectedProjectId && setIsInputActive(true)}
         >
           {isInputActive && selectedProjectId ? (

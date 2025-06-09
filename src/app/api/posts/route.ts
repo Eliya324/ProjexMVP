@@ -4,23 +4,15 @@ import { CommentableType, LikeableType } from "@prisma/client";
 import { auth } from "@clerk/nextjs/server";
 import { getNeonIdFromClerkId } from "@/lib/clerkToNeon";
 
-
 export async function POST(req: NextRequest) {
   const { userId } = await auth();
 
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
-  const body = await req.json(); 
-  const content = body.content;
-const image = body.image;
-const projectId = body.projectId;
-
-
+ 
+  const { content, image, projectId } = await req.json();
   const dbUserId = await getNeonIdFromClerkId(userId);
-
-
   const newPost = await prisma.post.create({
     data: {
       content,
@@ -29,11 +21,8 @@ const projectId = body.projectId;
       projectId, 
     },
   });
-
   return NextResponse.json(newPost);
 }
-
-
 
 export async function GET() {
   try {
@@ -94,7 +83,8 @@ export async function GET() {
       author: post.author,
       likes: likeCountByPostId[post.id] || 0,
       comments: commentCountByPostId[post.id] || 0,
-      projectTitle: post.project?.title || "",
+      projectTitle: post.project?.title || null,
+
     }));
 
     return NextResponse.json(formattedPosts);

@@ -30,94 +30,45 @@ const projectSchema = z.object({
   }),
 });
 
-// function getUserIdOrThrow(req: NextRequest): string {
-//   const { userId } = getAuth(req);
-//   if (!userId) throw new Error("Unauthorized");
-//   return userId;
-// }
-
-// async function getNeonUserIdOrResponse(req: NextRequest): Promise<string | NextResponse> {
-//   try {
-//     const userId = getUserIdOrThrow(req);
-//     return await getNeonIdFromClerkId(userId);
-//   } catch {
-//     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-//   }
-// }
-
 export async function POST(req: NextRequest) {
-    try {
-      const userId = getUserIdOrThrow(req);
-      const body = await req.json();
-  
-      const parsedData = projectSchema.safeParse(body);
-      if (!parsedData.success) {
-        return NextResponse.json({ message: parsedData.error.errors }, { status: 400 });
-      }
-  
-      const {
-        title,
-        shortDescription,
-        objective,
-        requiredSkills,
-        usedTechnologies,
-        missingTalents,
-        status,
-        documentPDFs,
-        relationships,
-        posts,
-        ratings
-      } = parsedData.data;
-  
-      const requiredFields = [
-        { value: title, name: "Title" },
-        { value: shortDescription, name: "Short description" },
-        { value: status, name: "Status" },
-      ];
-  
-      for (const { value, name } of requiredFields) {
-        if (!value) {
-          return NextResponse.json({ message: `${name} is required` }, { status: 400 });
-        }
-      }
-  
-      let neonUserId;
-      try {
-        neonUserId = await getNeonIdFromClerkId(userId);
-      } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        return NextResponse.json({ error: errorMessage }, { status: 400 });
-      }
-  
-      const newProject = await prisma.project.create({
-        data: {
-          owner: {
-            connect: {
-              id: neonUserId
-            }
-          },
-          title,
-          shortDescription,
-          objective,
-          requiredSkills,
-          usedTechnologies,
-          missingTalents,
-          status,
-          documentPDFs,
-          relationships,
-          posts,
-          ratings,
-        }
-      });
-  
-      return NextResponse.json({ message: "New project added successfully", project: newProject }, { status: 201 });
-    } catch (error: unknown) {
-      console.error("Error adding new project:", error);
-      const errorMessage = error instanceof Error ? error.message : "Error adding new project";
-      return NextResponse.json({ message: errorMessage }, { status: 500 });
+  try {
+    const userId = getUserIdOrThrow(req);
+    const body = await req.json();
+
+    const parsedData = projectSchema.safeParse(body);
+    if (!parsedData.success) {
+      return NextResponse.json({ message: parsedData.error.errors }, { status: 400 });
     }
+
+    const data = parsedData.data;
+
+    let neonUserId;
+    try {
+      neonUserId = await getNeonIdFromClerkId(userId);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      return NextResponse.json({ error: errorMessage }, { status: 400 });
+    }
+
+    const newProject = await prisma.project.create({
+      data: {
+        ...data,
+        owner: {
+          connect: {
+            id: neonUserId
+          }
+        }
+      }
+    });
+
+    return NextResponse.json({ message: "New project added successfully", project: newProject }, { status: 201 });
+  } catch (error: unknown) {
+    console.error("Error adding new project:", error);
+    const errorMessage = error instanceof Error ? error.message : "Error adding new project";
+    return NextResponse.json({ message: errorMessage }, { status: 500 });
   }
-  
+}
+
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
