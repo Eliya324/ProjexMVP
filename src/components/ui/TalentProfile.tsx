@@ -172,51 +172,45 @@ export default function TalentProfile({ email }: { email: string }) {
     }
   }
 
-  const handleConnect = async () => {
-    try {
-      const res = await fetch("/api/relationships", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          fromUserId: user?.id,
-          toUserId: fullUser?.id,
-          type: "FRIEND",
-        }),
-      });
+  const handleRelationship = async (type: "FRIEND" | "FOLLOWER") => {
+  try {
+    const res = await fetch("/api/relationships/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        fromUserId: user?.id,
+        toUserId: fullUser?.id,
+        type,
+      }),
+    });
 
-      if (!res.ok) throw new Error("Failed to send contact request");
+    if (!res.ok) throw new Error("Failed to create relationship");
 
-      const data = await res.json();
-      console.log("Contact request sent:", data);
-    } catch (err) {
-      console.error("Error:", err);
+    const data = await res.json();
+    alert(`${type} relationship created!`);
+    console.log(`${type} relationship created:`, data);
+       const newRelationship: Relationship = {
+      ...data.relationship,
+      fromUserId: user?.id!,
+      toUserId: fullUser?.id!,
+      type,
+      status: "PENDING", 
+      id: data.relationship?.id || "temp-id",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    if (type === "FRIEND") {
+      setFriendRelationship(newRelationship);
+    } else if (type === "FOLLOWER") {
+      setFollowerRelationship(newRelationship);
     }
-  };
-
-  const handleFollow = async () => {
-    try {
-      const res = await fetch("/api/relationships", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          fromUserId: user?.id,
-          toUserId: fullUser?.id,
-          type: "FOLLOWER",
-        }),
-      });
-
-      if (!res.ok) throw new Error("Failed to follow user");
-
-      const data = await res.json();
-      console.log("Follow request sent:", data);
-    } catch (err) {
-      console.error("Error:", err);
-    }
-  };
+  } catch (err) {
+    console.error("Error:", err);
+  }
+};
 
   if (notFound) {
     return (
@@ -304,7 +298,7 @@ export default function TalentProfile({ email }: { email: string }) {
                   🤝 {friendRelationship.status}
                 </Button>
               ) : (
-                <Button onClick={handleConnect} className="px-6 py-1 text-sm">
+                <Button onClick={() => handleRelationship("FRIEND")} className="px-6 py-1 text-sm">
                   🤝 Contact me
                 </Button>
               )}
@@ -319,7 +313,7 @@ export default function TalentProfile({ email }: { email: string }) {
                   👀 {followerRelationship.status}
                 </Button>
               ) : (
-                <Button onClick={handleFollow} className="px-6 py-1 text-sm">
+                <Button onClick={() => handleRelationship("FOLLOWER")} className="px-6 py-1 text-sm">
                   👀 Follow me
                 </Button>
               )}
