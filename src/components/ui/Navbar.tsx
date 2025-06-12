@@ -1,39 +1,58 @@
 "use client";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Logo from "@/components/ui/Logo";
-import MainNav from "./MainNav";
-import MobileNav from "./MobileNav";
-import SearchBar from "./SearchBar";
 import { useUser } from "@clerk/nextjs";
+import { Bell, Users, FileEdit, Briefcase } from "lucide-react";
+import SearchBar from "./SearchBar";
+import MobileNav from "./MobileNav";
+import MainNav from "./MainNav";
 
 export default function Navbar() {
-  const { isSignedIn } = useUser();
+  const { user, isSignedIn } = useUser();
+  const pathname = usePathname();
   const links = [
-    { href: "/about", label: "About" },
     ...(isSignedIn
       ? [{ href: "/projects/new", label: "Create a Project" }]
       : []),
   ];
-  const pathname = usePathname();
 
   return (
-    <header className="fixed top-0 w-full h-16 border-b bg-white z-[100] shadow-md">
-      <nav className="h-full container flex items-center justify-between mx-0 px-4">
-        {/* Logo */}
-        <div className="flex-shrink-0">
-          <Link href="/">
-            <Logo />
+    <header className="fixed top-0 w-full h-20 bg-white border-b shadow-md z-50">
+      <nav className="h-full max-w-[1512px] mx-auto px-4 flex items-center justify-between relative">
+        {/* Left side - logo + search bar in md  */}
+        <div className="flex items-center gap-3">
+          <Link
+            href="/"
+            className="text-violet-950  md:text-xl lg:text-2xl font-bold font-lato"
+          >
+            ProjexMVP
           </Link>
+
+          {/* Search bar - only in md  */}
+          {pathname !== "/" && (
+            <div className="hidden md:flex lg:hidden md:w-[37vw] ">
+              <SearchBar />
+            </div>
+          )}
         </div>
 
-        {/* Search - will be displayed only if it's not the home page */}
-        {pathname !== "/" && <SearchBar />}
+        {pathname !== "/" && (
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:hidden lg:block">
+            <div className="w-[50vw] sm:w-[60vw] lg:w-[37vw]">
+              <SearchBar />
+            </div>
+          </div>
+        )}
+        {/* Right side - links, icons, profile*/}
+        <MainNav
+          links={links}
+          user={user}
+          isSignedIn={isSignedIn ?? false}
+          pathname={pathname}
+        />
+        {/* Mobile menu*/}
 
-        {/* Desktop navigation */}
-        <MainNav links={links} />
-
-        {/* Mobile navigation */}
         <MobileNav links={links} />
       </nav>
     </header>

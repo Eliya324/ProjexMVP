@@ -117,11 +117,21 @@ export default function HomePage() {
         {/* Search Field */}
         <div
           className={cn(
+            "absolute bottom-[5%] sm:bottom-[10%] md:bottom-[3%] w-full flex justify-center px-4 sm:px-0"
+          )}
+        >
+          <div className="w-[80%] max-w-[600px]">
+            <SearchBar />
+          </div>
+        </div>
+
+        {/* <div
+          className={cn(
             "absolute bottom-[5%] sm:bottom-[10%] md:bottom-[3%] left-1/2 transform -translate-x-1/2 w-[70%] sm:w-[500px] h-[50px]"
           )}
         >
           <SearchBar />
-        </div>
+        </div> */}
       </div>
       {/* {/* Developer Types Row */}
       <div className=" max-sm:w-[95%] sm:w-[90%] sm:w-[90%] mx-auto mt-3 relative">
