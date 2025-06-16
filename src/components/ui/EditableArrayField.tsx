@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Button } from "./button";
 
 type EditableArrayFieldProps = {
   values: string[];
@@ -60,13 +61,14 @@ const EditableArrayField: React.FC<EditableArrayFieldProps> = ({
                 className="flex items-center gap-2 border border-gray-300 bg-gray-100 text-gray-800 px-3 py-1 rounded-full shadow-sm"
               >
                 <span className="text-sm">{item}</span>
-                <button
+                <Button
                   onClick={() => removeItem(item)}
-                  className="text-red-500 hover:text-red-700 text-sm"
+                  variant="ghost"
+                  className="text-red-600 hover:text-red-800 font-bold text-base"
                   title="Remove"
                 >
                   ✕
-                </button>
+                </Button>
               </div>
             ))}
           </div>

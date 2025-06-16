@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button } from "./Button";
+import { Button } from "./button";
 
 type EditableFieldProps = {
   value: string;
@@ -57,7 +57,7 @@ const EditableField: React.FC<EditableFieldProps> = ({
           className={`border border-gray-300 rounded px-2 py-1 w-full ${className}`}
           placeholder={placeholder}
         />
-        <Button
+        <Button variant="cta"
           onClick={() => {
             onUpdateField(fieldName, tempValue.trim());
             setIsFocused(false);

@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { FaEdit } from "react-icons/fa";
 import { useTalent } from "@/contexts/TalentContext";
+import { Button } from "./button";
 
 // Schema Validation
 const experienceSchema = z.object({
@@ -136,7 +137,7 @@ export default function Step2Form({
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-2xl mt-6 space-y-6">
-            <h2 className="text-3xl font-semibold text-violet-900">Professional Experience</h2>
+            <h2 className="text-3xl font-semibold">Professional Experience</h2>
             {!isRegistration && < p className="text-center text-gray-600 mt-2">
                 You can add your work experience or skip this step.
             </p>}
@@ -224,9 +225,10 @@ export default function Step2Form({
                                     </div>
 
                                     {fields.length > 1 && (
-                                        <button
+                                        <Button
                                             type="button"
-                                            className="mt-4 text-black-600 hover:text-red-800 text-sm"
+                                            variant="destructive"
+                                            className="mt-4 hover:text-red-800 text-sm"
                                             onClick={() => {
                                                 remove(index);
                                                 if (expandedIndex === index) {
@@ -237,7 +239,7 @@ export default function Step2Form({
                                             }}
                                         >
                                             Remove Experience
-                                        </button>
+                                        </Button>
                                     )}
                                 </>
                             )}
@@ -246,25 +248,25 @@ export default function Step2Form({
                 })
             }
 
-            <button
+            <Button
+                variant="secondary"
                 type="button"
-                className="flex items-center justify-center w-full border rounded-md p-2 bg-gray-100 hover:bg-gray-200"
                 onClick={() => {
                     append({ jobTitle: "", company: "", startDate: "", endDate: "", description: "" });
                     setExpandedIndex(fields.length);
                 }}
             >
                 + Add Another Experience
-            </button>
+            </Button>
 
             <div className="flex justify-between mt-6">
-                {isRegistration && <button type="button" className="px-4 py-2 border border-gray-400 text-gray-600 rounded-md" onClick={handlePrev}>
+                {isRegistration && <Button variant={isRegistration ? "secondary" : "primary"} type="button"  onClick={handlePrev}>
                     Prev
-                </button>
+                </Button>
                 }
-                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                <Button variant="primary" type="submit">
                     {isRegistration ? 'Next' : 'Update'}
-                </button>
+                </Button>
             </div>
         </form >
     );

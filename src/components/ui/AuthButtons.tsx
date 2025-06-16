@@ -2,9 +2,10 @@
 "use client"
 
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs";
+import { clerkAppearance } from "@/lib/clerkAppearance";
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation";
-import { Button } from "./Button";
+import { Button } from "./button";
 
 export default function AuthButtons() {
     const { isSignedIn, user, isLoaded } = useUser();
@@ -51,17 +52,21 @@ export default function AuthButtons() {
         <>
             {/* Login and registration buttons for those who are not logged in*/}
             <SignedOut>
-                <SignUpButton />
-                <SignInButton />
+                <SignUpButton mode="modal" appearance={clerkAppearance}>
+                    <Button variant="cta">Sign up</Button>
+                </SignUpButton>
+                <SignInButton  mode="modal" appearance={clerkAppearance}>
+                    <Button variant="secondary">Sign in</Button>
+                </SignInButton>
             </SignedOut>
 
             {/* Profile button for those who are logged in */}
             <SignedIn>
                 <UserButton />
                 {/* To edit and see personal details*/}
-                <Button
+                <Button variant="secondary"
                     onClick={() => router.push("/profile")}>
-                    My Details        
+                    My Details
                 </Button>
             </SignedIn>
         </>

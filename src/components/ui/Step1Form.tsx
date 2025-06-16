@@ -117,8 +117,8 @@ export default function Step1Form({
         {/* Submit Button */}
         <div className="flex justify-end mt-6">
 
-          <Button type="submit"
-            className="bg-blue-600 text-white px-6 py-3 text-lg rounded-lg" onClick={() => console.log("Button clicked")}>
+          <Button type="submit" variant="secondary"
+         onClick={() => console.log("Button clicked")}>
             Continue
           </Button>
 
