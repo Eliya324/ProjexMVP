@@ -1,9 +1,8 @@
-// app/api/projects/[projectId]/connections/route.ts
 
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-
+import { uniqueById } from "@/lib/utils";
 export async function GET(
   req: Request,
   { params }: { params: { projectId: string } }
@@ -44,9 +43,9 @@ export async function GET(
 
     return NextResponse.json(
       {
-        contributors: contributors.map((r) => r.user),
-        followers: followers.map((r) => r.user),
-        pendingRequests: pendingRequests.map((r) => r.user),
+        contributors: uniqueById(contributors.map((r) => r.user)),
+        followers: uniqueById(followers.map((r) => r.user)),
+        pendingRequests: uniqueById(pendingRequests.map((r) => r.user)),
       },
       { status: 200 }
     );

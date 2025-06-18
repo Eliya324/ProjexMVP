@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { getNeonIdFromClerkId } from "@/lib/clerkToNeon";
+import { uniqueById } from "@/lib/utils";
+
 
 export async function GET(req: Request) {
     const { userId } = await auth();
@@ -73,23 +75,10 @@ export async function GET(req: Request) {
         const allFollowers = [...followers.map(f => f.fromUser), ...friendUsers];
         const allFollowing = [...following.map(f => f.toUser), ...friendUsers];
 
-        // הסרת כפילויות לפי id (אופציונלי אך מומלץ)
-        const uniqueById = (arr:any[]) =>
-            Object.values(
-                arr.reduce((acc, user) => {
-                    acc[user.id] = user;
-                    return acc;
-                }, {})
-            );
         console.log("followers:", followers);
         console.log("following", following);
         console.log("pending", pendingRequests);
 
-
-
-        if (!followers) {
-            return NextResponse.json({ error: "followers not found" }, { status: 404 });
-        }
 
         return NextResponse.json({
             followers: uniqueById([...followers.map(f => f.fromUser), ...friendUsers]),

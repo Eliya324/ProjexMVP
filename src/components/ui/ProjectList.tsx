@@ -18,9 +18,9 @@ export default function ProjectList({ projects }: { projects: Project[] }) {
           <Card key={project.id}>
             <CardContent className="p-4">
               <p className="font-semibold">{project.title}</p>
-              {project.description && (
-                <p className="text-sm text-gray-600">{project.description}</p>
-              )}
+              <p className="text-sm text-gray-600">
+                {project.description || "No description provided."}
+              </p>
             </CardContent>
           </Card>
         ))
