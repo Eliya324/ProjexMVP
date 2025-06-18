@@ -203,6 +203,7 @@ export default function Step3Form({
             {/* Add new education entry */}
             <Button 
                 variant="secondary"
+                className="w-full"
                 onClick={() => {
                     const newIndex = fields.length; // לשמור את האינדקס החדש לפני ההוספה
                     append({ institution: "", degree: "", startDate: "", endDate: "", description: "" });

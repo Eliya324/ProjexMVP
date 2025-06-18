@@ -13,7 +13,7 @@ export default function Navbar() {
   const links = [
     { href: "/about", label: "About"},
     ...(isSignedIn
-      ? [{ href: "/projects/new", label: "Create a Project", variant: "cta" as const }]
+      ? [{ href: "/projects/new", label: "Create a Project", variant: "callToAction" as const }]
       : []),
   ];
   const pathname = usePathname();

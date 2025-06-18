@@ -53,7 +53,7 @@ export default function AuthButtons() {
             {/* Login and registration buttons for those who are not logged in*/}
             <SignedOut>
                 <SignUpButton mode="modal" appearance={clerkAppearance}>
-                    <Button variant="cta">Sign up</Button>
+                    <Button variant="callToAction">Sign up</Button>
                 </SignUpButton>
                 <SignInButton  mode="modal" appearance={clerkAppearance}>
                     <Button variant="secondary">Sign in</Button>

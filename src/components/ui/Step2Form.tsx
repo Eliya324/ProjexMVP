@@ -250,6 +250,7 @@ export default function Step2Form({
 
             <Button
                 variant="secondary"
+                className="w-full"
                 type="button"
                 onClick={() => {
                     append({ jobTitle: "", company: "", startDate: "", endDate: "", description: "" });

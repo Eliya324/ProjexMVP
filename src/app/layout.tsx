@@ -22,6 +22,7 @@ const poppins = localFont({
   src:"./fonts/Poppins-Bold.woff",
   variable: "--font-poppins",
   weight: "100 900",
+  display: "swap"
 });
 export const metadata: Metadata = {
   title: "Create Next App",

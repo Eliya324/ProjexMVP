@@ -3,16 +3,9 @@
 @tailwind utilities;
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+ 
 }
 
-button,
-a[role="button"],
-a[class*="inline-flex"],
-input[type="submit"],
-input[type="button"] {
-  font-family: var(--font-poppins), sans-serif;
-}
 
 @layer utilities {
   .text-balance {
