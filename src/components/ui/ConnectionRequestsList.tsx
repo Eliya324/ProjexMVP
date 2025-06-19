@@ -4,8 +4,11 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/Button"
 import { useState } from "react"
 import axios from "axios"
+import Link from "next/link"
 
 type Request = {
+    username: string,
+    id: string,
     relationshipId: string,
     fullName: string,
     title: string,
@@ -42,6 +45,10 @@ export default function ConnectionRequestsList({ requests, onChange }: { request
             </p>
             <div className="space-y-2">
                 {pendingRequests.length > 0 && pendingRequests.map((user) => (
+                     <Link
+                                href={`/profile/${user.username}`}
+                                key={user.id}
+                              >
                     <Card key={user.relationshipId}>
                         <CardContent className="flex items-center justify-between gap-4 p-4">
                             <div className="flex items-center gap-4">
@@ -76,6 +83,7 @@ export default function ConnectionRequestsList({ requests, onChange }: { request
                             </div>
                         </CardContent>
                     </Card>
+                    </Link>
                 ))}
             </div>
         </>
