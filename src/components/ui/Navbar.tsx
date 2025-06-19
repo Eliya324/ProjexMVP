@@ -6,13 +6,14 @@ import MainNav from "./MainNav";
 import MobileNav from "./MobileNav";
 import SearchBar from "./SearchBar";
 import { useUser } from "@clerk/nextjs";
+ 
 
 export default function Navbar() {
   const { isSignedIn } = useUser();
   const links = [
-    { href: "/about", label: "About" },
+    { href: "/about", label: "About"},
     ...(isSignedIn
-      ? [{ href: "/projects/new", label: "Create a Project" }]
+      ? [{ href: "/projects/new", label: "Create a Project", variant: "callToAction" as const }]
       : []),
   ];
   const pathname = usePathname();

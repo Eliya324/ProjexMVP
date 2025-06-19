@@ -3,7 +3,7 @@ import { UploadButton, OurFileRouter } from "@/lib/uploadthing";
 import { Input } from "./Input";
 import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form"
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { MultiSelect } from "@/components/ui/MultiSelect";
 import { Toaster } from 'react-hot-toast';
 import { Textarea } from "@/components/ui/textarea";
@@ -188,7 +188,7 @@ const NewProject = ({ onSubmitForm }: { onSubmitForm: (data: FormValues) => void
           )}
         />
 
-        <Button type="submit" >Save</Button>
+        <Button type="submit"  variant="primary" >Save</Button>
       </form>
     </FormProvider>
   )
