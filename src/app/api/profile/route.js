@@ -6,26 +6,36 @@ import { getNeonIdFromClerkId } from "@/lib/clerkToNeon";
 export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const email = searchParams.get("email");
+    const username = searchParams.get("username");
 
-    if (!email) {
-        return NextResponse.json({ error: "Email is required" }, { status: 400 });
+
+    if (!email && !username) {
+        return NextResponse.json({ error: "Email or username is required" }, { status: 400 });
     }
 
     try {
-        const user = await prisma.user.findUnique({
-            where: { email },
-            include: {
-                professionalExperiences: true,
-                educations: true,
-                certifications: true,
-                recommendationsReceived: true,
-                projectRelationships: {
-                    include: { project: true },
+        let user;
+        if (email) {
+            user = await prisma.user.findUnique({
+                where: { email },
+                include: {
+                    professionalExperiences: true,
+                    educations: true,
+                    certifications: true,
+                    recommendationsReceived: true,
+                    projectRelationships: {
+                        include: { project: true },
+                    },
+                    relationshipsSent: true,
+                    relationshipsReceived: true,
                 },
-                relationshipsSent: true,
-                relationshipsReceived: true,
-            },
-        });
+            });
+        } else if (username) {
+            user = await prisma.user.findUnique({
+                where: { username },
+                select: { email: true },
+            });
+        }
         console.log("User:", user);
 
         if (!user) {
@@ -45,7 +55,7 @@ export async function GET(req) {
 export async function PUT(req) {
     try {
         const { userId } = await auth();
-        
+
         if (!userId) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
