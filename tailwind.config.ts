@@ -19,6 +19,9 @@ const config: Config = {
 			fontSize: {
 				'xxs': '0.65rem',
 			},
+			fontFamily: {
+				poetsen: ["'Poetsen One'", 'cursive'],
+			},
 			colors: {
 				blue: {
 					DEFAULT: "#000080",
@@ -72,7 +75,7 @@ const config: Config = {
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate"), require('tailwind-scrollbar'), require("tailwind-scrollbar-hide"),require("@tailwindcss/line-clamp") ]
+	plugins: [require("tailwindcss-animate"), require('tailwind-scrollbar'), require("tailwind-scrollbar-hide"), require("@tailwindcss/line-clamp")]
 };
 
 export default config;
