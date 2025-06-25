@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Button } from "./button";
+import { Star } from 'lucide-react';
 
 interface FeedbackPopupProps {
     type: 'rating' | 'binary';
@@ -22,21 +23,22 @@ const FeedbackPopup: React.FC<FeedbackPopupProps> = ({ type, question, onClose }
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className={`bg-white font-bold rounded-2xl shadow-lg relative flex flex-col overflow-hidden ${popupSizeClasses} border-2 border-white`}>
                 <div className="bg-[#000080] w-full p-1 text-center text-white relative">
-                    <h2 className="text-xl">Hey jony 👋</h2>
+                    <h2 className="text-xl flex items-center justify-center gap-2">
+                        Hey jony
+                    </h2>
                     <p className="text-sm">{question}</p>
                 </div>
 
                 <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
                     {type === 'rating' ? (
                         <>
-                            <div className="flex justify-center gap-3 text-3xl">
-                                {[1, 2, 3, 4, 5].map((num) => (
-                                    <button
-                                        key={num}
-                                        onClick={() => setRating(num)}
-                                        className={`${rating && rating >= num ? "text-yellow-400" : "text-gray-300"}`}
-                                    >
-                                        ★
+                            <div className="flex justify-center gap-3">
+                                {[1, 2, 3, 4, 5].map(num => (
+                                    <button key={num} onClick={() => setRating(num)}>
+                                        <Star
+                                            className={`w-6 h-6 ${rating && rating >= num ? "fill-yellow-400 stroke-yellow-400" : "stroke-gray-300"
+                                                }`}
+                                        />
                                     </button>
                                 ))}
                             </div>
@@ -65,7 +67,7 @@ const FeedbackPopup: React.FC<FeedbackPopupProps> = ({ type, question, onClose }
                         </>
                     ) : (
                         <div className="flex justify-center gap-12 mt-[12px]">
-                            <Button variant="primary" className="text-red-600"
+                            <Button variant="decline"
                                 onClick={() => {
                                     setIsHelpful(false);
                                     onClose();
@@ -73,7 +75,7 @@ const FeedbackPopup: React.FC<FeedbackPopupProps> = ({ type, question, onClose }
                             >
                                 No
                             </Button>
-                            <Button variant="primary" className="text-green-600"
+                            <Button variant="confirm"
                                 onClick={() => {
                                     setIsHelpful(true);
                                     onClose();

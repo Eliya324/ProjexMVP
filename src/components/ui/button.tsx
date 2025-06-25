@@ -20,6 +20,8 @@ const buttonVariants = cva(
         link: "text-[#808080] hover:opacity-50 text-base font-medium transition-colors font-bold text-1.2xl",
         callToAction: "px-6 h-8 py-2 bg-amber-600  shadow-[7px_2px_4px_0px_rgba(0,0,0,0.25)] outline outline-[3px] outline-neutral-100 inline-flex justify-center items-center gap-2.5 text-neutral-100 text-1.2xl font-bold",
         blueCircle: "w-10 h-10 bg-[#000080] text-white  rounded-full shadow hover:bg-[#000066] transition-colors",
+        confirm: "bg-green-300 text-green-600 font-bold border-2 hover:bg-green-400",
+        decline:"bg-red-300 text-red-600 font-bold border-2 hover:bg-red-400",
       },
       size: {
         default: "h-9 px-4 py-2",
