@@ -19,6 +19,9 @@ const config: Config = {
 			fontSize: {
 				'xxs': '0.65rem',
 			},
+			fontFamily: {
+				poetsen: ["'Poetsen One'", 'cursive'],
+			},
 			colors: {
 				blue: {
 					DEFAULT: "#000080",

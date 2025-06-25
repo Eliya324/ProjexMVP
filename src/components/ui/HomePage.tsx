@@ -14,6 +14,8 @@ import ProjectCard from "./ProjectCard";
 import UserCard from "./UserCard";
 import SearchBar from "./SearchBar";
 import PostCard from "./PostCard";
+import FeedbackPopup from "@/components/ui/FeedbackPopup";
+import { useUser } from "@clerk/nextjs";
 
 type Post = {
   id: string;
@@ -67,7 +69,7 @@ const projects = Array.from({ length: 6 }).map((_, index) => ({
   image: `https://placehold.co/270x150?text=Project+${index + 1}`,
   description: `This is a description for Project ${
     index + 1
-  }. A cutting-edge solution for modern needs.`,
+    }. A cutting-edge solution for modern needs.`,
 }));
 const users = Array.from({ length: 6 }).map((_, index) => ({
   id: index,
@@ -84,6 +86,13 @@ const users = Array.from({ length: 6 }).map((_, index) => ({
 export default function HomePage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
+  const { user, isLoaded } = useUser()
+  const [showPopup, setShowPopup] = useState(false);
+  useEffect(() => {
+    if (isLoaded && user) {
+      setShowPopup(true);
+    }
+  }, [isLoaded, user]);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -106,6 +115,11 @@ export default function HomePage() {
         "h-full pt-24 flex flex-col overflow-y-auto border border-red items-center w-full relative px-4 sm:px-0"
       )}
     >
+      <>{showPopup && (<FeedbackPopup
+        type="rating"
+        question="Was this information helpful?"
+        onClose={() => setShowPopup(false)} />)}
+      </>
       {/* Banner */}
       <div
         className={cn(
@@ -277,7 +291,7 @@ export default function HomePage() {
         ) : (
           <Carousel className="relative w-full">
             <CarouselContent className=" flex max-sm:flex-col max-sm:items-center max-sm:h-full sm:flex-row sm:overflow-visible scrollbar-hide sm:scrollbar-default">
-              {posts.map((post) => (
+              {posts.length > 0 && posts.map((post) => (
                 <CarouselItem
                   key={post.id}
                   className="basis-[100%] max-sm:w-[100%] sm:basis-[50%] md:basis-[39%] lg:basis-[30%] xl:basis-1/4 flex justify-center items-center"
