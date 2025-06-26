@@ -14,6 +14,8 @@ import ProjectCard from "./ProjectCard";
 import UserCard from "./UserCard";
 import SearchBar from "./SearchBar";
 import PostCard from "./PostCard";
+import FeedbackPopup from "@/components/ui/FeedbackPopup";
+import { useUser } from "@clerk/nextjs";
 
 type Post = {
   id: string;
@@ -84,7 +86,13 @@ const users = Array.from({ length: 6 }).map((_, index) => ({
 export default function HomePage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
-
+  const { user, isLoaded } = useUser()
+  const [showPopup, setShowPopup] = useState(false);
+  useEffect(() => {
+    if (isLoaded && user) {
+      setShowPopup(true);
+    }
+  }, [isLoaded, user]);
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -106,6 +114,15 @@ export default function HomePage() {
         "h-full pt-24 flex flex-col overflow-y-auto border border-red items-center w-full relative px-4 sm:px-0"
       )}
     >
+      <>
+        {showPopup && (
+          <FeedbackPopup
+            type="binary"
+            question="Was this information helpful?"
+            onClose={() => setShowPopup(false)}
+          />
+        )}
+      </>
       {/* Banner */}
       <div
         className={cn(
