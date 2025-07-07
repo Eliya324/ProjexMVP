@@ -6,14 +6,19 @@ import MainNav from "./MainNav";
 import MobileNav from "./MobileNav";
 import SearchBar from "./SearchBar";
 import { useUser } from "@clerk/nextjs";
- 
+import { isAdminEmail } from "@/lib/auth";
+
 
 export default function Navbar() {
-  const { isSignedIn } = useUser();
+  const { user, isSignedIn, isLoaded } = useUser();
+  const userEmail = user?.primaryEmailAddress?.emailAddress;
+  const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAILS;
+  const isAdmin = isLoaded && isSignedIn && userEmail === adminEmail;
   const links = [
     { href: "/about", label: "About"},
     ...(isSignedIn
-      ? [{ href: "/projects/new", label: "Create a Project", variant: "callToAction" as const }]
+      ? [{ href: "/projects/new", label: "Create a Project", variant: "callToAction" as const },
+         ...(isAdmin? [{ href: "/admin", label: "Manage Site", variant: "outline" as const}] : []),]
       : []),
   ];
   const pathname = usePathname();

@@ -18,6 +18,18 @@ export async function getNeonUserIdOrResponse(req: NextRequest): Promise<string 
   }
 }
 
+export function isAdminEmail(email?: string | null): boolean {
+  if (!email) return false;
+  // Choose the correct environment variable based on the execution context
+  // Use server-side variable if running on the server, otherwise use the public one for the client
+  const envVar =
+    typeof window === "undefined"
+      ? process.env.ADMIN_EMAILS 
+      : process.env.NEXT_PUBLIC_ADMIN_EMAILS; 
+  const adminEmails = envVar?.split(",").map((e) => e.trim()) ?? [];
+  return adminEmails.includes(email);
+}
+
 // // app/(some-page)/page.tsx
 // import AddPosts from "@/components/AddPosts";
 // import { prisma } from "@/lib/prisma";

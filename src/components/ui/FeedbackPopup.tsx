@@ -2,22 +2,58 @@
 
 import React, { useState } from "react";
 import { Button } from "./button";
-import { Star } from 'lucide-react';
+import { Star } from "lucide-react";
 
 interface FeedbackPopupProps {
-    type: 'rating' | 'binary';
+    type: "rating" | "binary";
     question: string;
+    questionId: string;
     onClose: () => void;
 }
 
-const FeedbackPopup: React.FC<FeedbackPopupProps> = ({ type, question, onClose }) => {
+const FeedbackPopup: React.FC<FeedbackPopupProps> = ({
+    type,
+    question,
+    questionId,
+    onClose,
+}) => {
     const [rating, setRating] = useState<number | null>(null);
     const [isHelpful, setIsHelpful] = useState<boolean | null>(null);
     const [comment, setComment] = useState<string>("");
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
 
-    const popupSizeClasses = type === 'rating'
-        ? 'w-[300px] h-[330px]'
-        : 'w-[300px] h-[130px]';
+    const handleFeedbackSubmit = async (helpful: boolean) => {
+        if (!questionId) return;
+
+        if (type === "rating" && rating == null) return;
+        if (type === "binary" && helpful == null) return;
+        setLoading(true);
+        setError(null);
+        try {
+            const res = await fetch("/api/feedback", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    questionId,
+                    isHelpful: helpful,
+                    rating,
+                    comment,
+                }),
+            });
+
+            if (!res.ok) throw new Error(`Error ${res.status}`);
+            onClose();
+        } catch (err: any) {
+            console.error("❌ Error submitting feedback:", err);
+            setError(err.message || "An error occurred.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const popupSizeClasses =
+        type === "rating" ? "w-[300px] h-[330px]" : "w-[300px] h-[130px]";
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -30,13 +66,15 @@ const FeedbackPopup: React.FC<FeedbackPopupProps> = ({ type, question, onClose }
                 </div>
 
                 <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
-                    {type === 'rating' ? (
+                    {type === "rating" ? (
                         <>
                             <div className="flex justify-center gap-3">
-                                {[1, 2, 3, 4, 5].map(num => (
+                                {[1, 2, 3, 4, 5].map((num) => (
                                     <button key={num} onClick={() => setRating(num)}>
                                         <Star
-                                            className={`w-6 h-6 ${rating && rating >= num ? "fill-yellow-400 stroke-yellow-400" : "stroke-gray-300"
+                                            className={`w-6 h-6 ${rating && rating >= num
+                                                ? "fill-yellow-400 stroke-yellow-400"
+                                                : "stroke-gray-300"
                                                 }`}
                                         />
                                     </button>
@@ -48,14 +86,8 @@ const FeedbackPopup: React.FC<FeedbackPopupProps> = ({ type, question, onClose }
                                 onChange={(e) => setComment(e.target.value)}
                                 className="w-full border rounded-2xl p-2 h-24 mt-4 text-sm"
                             />
-                            <Button
-                                variant="primary"
-                                onClick={() => {
-                                    console.log("Feedback submitted", { rating, comment });
-                                    onClose();
-                                }}
-                            >
-                                Submit
+                            <Button variant="primary" onClick={() => handleFeedbackSubmit(true)} disabled={loading}>
+                                 {loading ? "Submitting..." : "Submit"}
                             </Button>
                             <Button
                                 variant="ghost"
@@ -67,19 +99,20 @@ const FeedbackPopup: React.FC<FeedbackPopupProps> = ({ type, question, onClose }
                         </>
                     ) : (
                         <div className="flex justify-center gap-12 mt-[12px]">
-                            <Button variant="decline"
+                            <Button
+                                variant="decline"
                                 onClick={() => {
-                                    setIsHelpful(false);
-                                    onClose();
+                                    handleFeedbackSubmit(false);
                                 }}
                             >
                                 No
                             </Button>
-                            <Button variant="confirm"
+                            <Button
+                                variant="confirm"
                                 onClick={() => {
-                                    setIsHelpful(true);
-                                    onClose();
-                                }}                            >
+                                    handleFeedbackSubmit(true);
+                                }}
+                            >
                                 Yes
                             </Button>
                         </div>
