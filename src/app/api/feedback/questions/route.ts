@@ -27,20 +27,18 @@ export async function POST(req: NextRequest) {
     const user = await client.users.getUser(userId);
     const email = user.primaryEmailAddress?.emailAddress;
 
-    if (!email || !isAdminEmail(email)) {
-      return NextResponse.json({ error: "Email not found" }, { status: 403 });
+    if (!email) {
+      return NextResponse.json({ error: "Email not found" }, { status: 400 });
     }
-    const adminEmails = process.env.ADMIN_EMAILS?.split(",").map(e => e.trim()) ?? [];
-    if (!adminEmails.includes(email)) {
+    if (!isAdminEmail(email)) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
-
+    
     const { question, type } = await req.json();
 
     if (!question || !["RATING", "BINARY"].includes(type)) {
       return NextResponse.json({ error: "Missing or invalid fields" }, { status: 400 });
     }
-    
     const newQuestion = await prisma.feedbackQuestion.create({
       data: { question, type },
     });

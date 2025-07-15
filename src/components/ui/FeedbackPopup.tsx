@@ -18,7 +18,6 @@ const FeedbackPopup: React.FC<FeedbackPopupProps> = ({
     onClose,
 }) => {
     const [rating, setRating] = useState<number | null>(null);
-    const [isHelpful, setIsHelpful] = useState<boolean | null>(null);
     const [comment, setComment] = useState<string>("");
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
@@ -39,6 +38,7 @@ const FeedbackPopup: React.FC<FeedbackPopupProps> = ({
                     isHelpful: helpful,
                     rating,
                     comment,
+                     type: type.toUpperCase(),
                 }),
             });
 
@@ -52,13 +52,12 @@ const FeedbackPopup: React.FC<FeedbackPopupProps> = ({
         }
     };
 
-    const popupSizeClasses =
-        type === "rating" ? "w-[300px] h-[330px]" : "w-[300px] h-[130px]";
+   const popupSizeClasses = "w-full max-w-sm p-1 bg-white rounded-xl shadow-xl";
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className={`bg-white font-bold rounded-2xl shadow-lg relative flex flex-col overflow-hidden ${popupSizeClasses} border-2 border-white`}>
-                <div className="bg-[#000080] w-full p-1 text-center text-white relative">
+                <div className="bg-[#000080] rounded-t-xl w-full p-1 text-center text-white relative">
                     <h2 className="text-xl flex items-center justify-center gap-2">
                         Hey jony
                     </h2>

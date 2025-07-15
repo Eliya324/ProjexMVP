@@ -12,10 +12,17 @@ export async function POST(req: NextRequest) {
         }
         const neonUserId = await getNeonIdFromClerkId(userId);
         const body = await req.json();
-        const { questionId, rating, isHelpful, comment } = body;
+        const { questionId, rating, isHelpful, comment, type } = body;
+        if (!questionId || !["RATING", "BINARY"].includes(type)) {
+            return NextResponse.json({ error: "Missing or invalid type" }, { status: 400 });
+        }
 
-        if (!questionId || (rating == null && isHelpful == null)) {
-            return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+        if (type === "RATING" && rating == null) {
+            return NextResponse.json({ error: "Missing rating" }, { status: 400 });
+        }
+
+        if (type === "BINARY" && isHelpful == null) {
+            return NextResponse.json({ error: "Missing isHelpful" }, { status: 400 });
         }
 
         const newFeedback = await prisma.feedback.create({

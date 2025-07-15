@@ -7,16 +7,18 @@ export default function AdminDashboardClient() {
     const [question, setQuestion] = useState("");
     const [type, setType] = useState<"RATING" | "BINARY">("RATING");
     const [successMessage, setSuccessMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (successMessage) {
+        if (successMessage || errorMessage) {
             const timer = setTimeout(() => {
                 setSuccessMessage("");
+                setErrorMessage("");
             }, 3000);
             return () => clearTimeout(timer);
         }
-    }, [successMessage]);
+    }, [successMessage, errorMessage]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -29,12 +31,12 @@ export default function AdminDashboardClient() {
             });
             if (!res.ok) throw new Error("Failed to create question");
 
-            setSuccessMessage("!שאלה נוספה בהצלחה");
+            setSuccessMessage("Question added successfully.");
             setQuestion("");
             setType("RATING");
         } catch (err) {
             console.error("Error creating question:", err);
-            setSuccessMessage("❌ שגיאה בהוספת שאלה");
+            setErrorMessage("Error adding question");
         } finally {
             setLoading(false);
         }
@@ -83,6 +85,9 @@ export default function AdminDashboardClient() {
 
                 {successMessage && (
                     <p className="text-center mt-3 font-medium text-green-600">{successMessage}</p>
+                )}
+                {errorMessage && (
+                    <p className="text-center mt-3 font-medium text-red-600">{errorMessage}</p>
                 )}
             </form>
         </main>
