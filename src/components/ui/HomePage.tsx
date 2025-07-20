@@ -14,6 +14,9 @@ import ProjectCard from "./ProjectCard";
 import UserCard from "./UserCard";
 import SearchBar from "./SearchBar";
 import PostCard from "./PostCard";
+import FeedbackPopup from "@/components/ui/FeedbackPopup";
+import { useUser } from "@clerk/nextjs";
+import { date } from "zod";
 
 type Post = {
   id: string;
@@ -67,7 +70,7 @@ const projects = Array.from({ length: 6 }).map((_, index) => ({
   image: `https://placehold.co/270x150?text=Project+${index + 1}`,
   description: `This is a description for Project ${
     index + 1
-  }. A cutting-edge solution for modern needs.`,
+    }. A cutting-edge solution for modern needs.`,
 }));
 const users = Array.from({ length: 6 }).map((_, index) => ({
   id: index,
@@ -84,6 +87,42 @@ const users = Array.from({ length: 6 }).map((_, index) => ({
 export default function HomePage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
+  const { user, isLoaded } = useUser()
+  const [showPopup, setShowPopup] = useState(false);
+  const [questionId, setQuestionId] = useState<string | null>(null);
+  const [questionText, setQuestionText] = useState<string>("");
+  const [questionType, setQuestionType] = useState<"rating" | "binary">("rating");
+  useEffect(() => {
+    const checkIfAnswered = async () => {
+      const userEmail = user?.primaryEmailAddress?.emailAddress;
+      const adminEmails = process.env.NEXT_PUBLIC_ADMIN_EMAILS?.split(",").map(e => e.trim()) ?? [];
+      const isAdmin = !!userEmail && adminEmails.includes(userEmail);
+      if (isLoaded && user && questionId && !isAdmin) {
+        const res = await fetch(`/api/feedback/answered?questionId=${questionId}`);
+        const data = await res.json();
+        if (!data.answered) {
+          setShowPopup(true);
+        }
+      }
+    };
+    checkIfAnswered();
+  }, [isLoaded, user, questionId]);
+
+  useEffect(() => {
+    const fetchLatestQuestion = async () => {
+      try {
+        const res = await fetch("/api/feedback/latestQuestion");
+        if (!res.ok) return;
+        const data = await res.json();
+        setQuestionId(data.id);
+        setQuestionText(data.question);
+        setQuestionType(data.type.toLowerCase() as "rating" | "binary");
+      } catch (err) {
+        console.error("❌ Failed to fetch latest question:", err);
+      }
+    };
+    fetchLatestQuestion();
+  }, []);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -106,6 +145,16 @@ export default function HomePage() {
         "h-full pt-24 flex flex-col overflow-y-auto border border-red items-center w-full relative px-4 sm:px-0"
       )}
     >
+      <>
+        {showPopup && questionId && (
+          <FeedbackPopup
+            type={questionType}
+            question={questionText}
+            questionId={questionId}
+            onClose={() => setShowPopup(false)}
+          />
+        )}
+      </>
       {/* Banner */}
       <div
         className={cn(
@@ -277,7 +326,7 @@ export default function HomePage() {
         ) : (
           <Carousel className="relative w-full">
             <CarouselContent className=" flex max-sm:flex-col max-sm:items-center max-sm:h-full sm:flex-row sm:overflow-visible scrollbar-hide sm:scrollbar-default">
-              {posts.map((post) => (
+              {posts.length > 0 && posts.map((post) => (
                 <CarouselItem
                   key={post.id}
                   className="basis-[100%] max-sm:w-[100%] sm:basis-[50%] md:basis-[39%] lg:basis-[30%] xl:basis-1/4 flex justify-center items-center"

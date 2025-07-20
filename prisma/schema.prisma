@@ -43,6 +43,7 @@ model User {
   comments               Comment[]
   tweets                 Tweet[]
   likes                  Like[]
+  feedbacks              Feedback[]
   projectRatings         ProjectRating[]
   notifications          Notification[] @relation("userNotifications") // Notifications received by a user
   notificationsSent      Notification[] @relation("senderNotifications") // Notifications sent by a user
@@ -257,4 +258,29 @@ enum NotificationType {
   COMMENT
   FOLLOW
   PROJECT_RELATIONSHIP
+}
+
+enum FeedbackType {
+  RATING
+  BINARY
+}
+
+model FeedbackQuestion {
+  id         String       @id @default(uuid())
+  question   String
+  type       FeedbackType
+  createdAt  DateTime     @default(now())
+  feedbacks  Feedback[] 
+}
+
+model Feedback {
+  id          String       @id @default(uuid())
+  userId      String
+  questionId  String
+  rating      Int?
+  isHelpful   Boolean?
+  comment     String?
+  createdAt   DateTime     @default(now())
+  user        User         @relation(fields: [userId], references: [id])
+  question    FeedbackQuestion @relation(fields: [questionId], references: [id])
 }
