@@ -1,27 +1,36 @@
-import Link from 'next/link';
-import { Button, buttonVariants } from "@/components/ui/button";
-import { VariantProps } from "class-variance-authority";
-import AuthButtons from './AuthButtons';
+import Link from "next/link";
+import AuthButtons from "./AuthButtons";
+import NavigationList from "./NavigationList";
+import { SignedIn } from "@clerk/nextjs";
 
-type ButtonVariant = VariantProps<typeof buttonVariants>["variant"];
+interface MainNavProps {
+  links: { href: string; label: string }[];
+  pathname: string;
+}
 
-type NavLink = {
-    href: string;
-    label: string;
-    variant?: ButtonVariant;
-};
+export default function MainNav({ links, pathname }: MainNavProps) {
+  return (
+    <div className="hidden md:flex items-center gap-4 lg:gap-3 xl:gap-5 text-sm xl:text-md 2xl:text-lg ">
+      {links.map((link) => (
+        <Link
+          key={link.href}
+          href={link.href}
+          className={`text-md font-lato ${
+            pathname === link.href
+              ? "text-violet-950 font-semibold scale-105"
+              : "text-zinc-500"
+          }`}
+        >
+          {link.label}
+        </Link>
+      ))}
 
-export default function MainNav({ links }: { links: NavLink[] }) {
-    return (
-        <div className="hidden md:flex items-center gap-3 lg:gap-4 ml-8 text-md">
-            {links.map((link) => (
-                <Button key={link.href} variant={link.variant ?? "link"} asChild>
-                    <Link href={link.href}>
-                        {link.label}
-                    </Link>
-                </Button>
-            ))}
-            <AuthButtons />
-        </div>
-    );
+      {/* Show icons only to logged in users*/}
+      <SignedIn>
+        <NavigationList variant="desktop" pathname={pathname} />
+      </SignedIn>
+
+      <AuthButtons />
+    </div>
+  );
 }

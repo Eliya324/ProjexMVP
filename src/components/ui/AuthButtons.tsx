@@ -1,74 +1,109 @@
+"use client";
 
-"use client"
-
-import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs";
-import { clerkAppearance } from "@/lib/clerkAppearance";
-import { useEffect, useState } from "react"
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+  useUser,
+} from "@clerk/nextjs";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "./button";
+import Link from "next/link";
+import { Button } from "./Button";
+
+// External function for user registration
+async function registerUser(
+  user: any,
+  router: any,
+  setHasRegistered: () => void
+) {
+  try {
+    const response = await fetch("/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username:
+          user.username ||
+          (user.lastName
+            ? `${user.firstName} ${user.lastName}`
+            : user.firstName),
+        email: user.primaryEmailAddress?.emailAddress,
+      }),
+    });
+
+    const data = await response.json();
+    console.log("Registration response:", data);
+
+    if (data.success) {
+      router.push("/register");
+    }
+  } catch (err) {
+    console.error("Failed to register:", err);
+  } finally {
+    // עדכון הדגל תמיד – גם אם יש שגיאה
+    setHasRegistered();
+  }
+}
 
 export default function AuthButtons() {
-    const { isSignedIn, user, isLoaded } = useUser();
-    const router = useRouter();
-    const [hasRegistered, setHasRegistered] = useState(false);
+  const { isSignedIn, user, isLoaded } = useUser();
+  const router = useRouter();
+  const hasRegisteredRef = useRef(false); // דגל פנימי שאינו תלוי ברינדור
 
+  useEffect(() => {
+    if (
+      isLoaded &&
+      isSignedIn &&
+      user?.primaryEmailAddress?.emailAddress &&
+      !hasRegisteredRef.current
+    ) {
+      const userCreationTime = user.createdAt
+        ? new Date(Number(user.createdAt))
+        : null;
 
-    useEffect(() => {
-        if (isLoaded && isSignedIn && user?.primaryEmailAddress?.emailAddress && !hasRegistered) {
-            //Check if the user Register After Clerck-Create in DB
-            const userCreationTime = user.createdAt ? new Date(Number(user.createdAt)) : null;
-            if (userCreationTime) {
-                const now = new Date();
-                const timeDiff = (now.getTime() - userCreationTime.getTime()) / 1000;
-                if (timeDiff < 30) {
+      if (userCreationTime) {
+        const now = new Date();
+        const timeDiff = (now.getTime() - userCreationTime.getTime()) / 1000;
 
-                    fetch("/api/register", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            username: user.username || (user.lastName ? `${user.firstName} ${user.lastName}` : user.firstName),
-                            email: user.primaryEmailAddress.emailAddress,
-                        }),
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log("Registration response:", data);
-                            if (data.success) {
-                                router.push("/register")
-                                setHasRegistered(true);
-                            }
-                        })
-                        .catch((err) => console.error("Failed to register:", err));
-                }
-            }
-
+        if (timeDiff < 60) {
+          registerUser(user, router, () => {
+            hasRegisteredRef.current = true;
+          });
         }
+      }
+    }
+  }, [isLoaded, isSignedIn, user]);
 
-    }, [isSignedIn, user, isLoaded, hasRegistered]);
+  return (
+    <>
+      <SignedOut>
+        <div className="flex items-center gap-2">
+          <Link href="/about">
+            <Button className="max-sm:text-xs md:text-sm px-4 py-1 ml-[-10px]">
+              {/* <Button className="max-sm:text-xs md:text-sm px-4 py-1 -mr-4"> */}
+              About
+            </Button>
+          </Link>
 
+          <SignInButton mode="modal">
+            <Button className="max-sm:text-xs md:text-sm px-4 py-1 -mr-1">
+              Sign in
+            </Button>
+          </SignInButton>
 
+          <SignUpButton mode="modal">
+            <Button className="font-bold border border-black px-2 py-1 rounded max-sm:text-xs md:text-sm mr-3">
+              Sign up
+            </Button>
+          </SignUpButton>
+        </div>
+      </SignedOut>
 
-    return (
-        <>
-            {/* Login and registration buttons for those who are not logged in*/}
-            <SignedOut>
-                <SignUpButton mode="modal" appearance={clerkAppearance}>
-                    <Button variant="callToAction">Sign up</Button>
-                </SignUpButton>
-                <SignInButton  mode="modal" appearance={clerkAppearance}>
-                    <Button variant="secondary">Sign in</Button>
-                </SignInButton>
-            </SignedOut>
-
-            {/* Profile button for those who are logged in */}
-            <SignedIn>
-                <UserButton />
-                {/* To edit and see personal details*/}
-                <Button variant="secondary"
-                    onClick={() => router.push("/profile")}>
-                    My Details
-                </Button>
-            </SignedIn>
-        </>
-    );
+      <SignedIn>
+        <UserButton />
+      </SignedIn>
+    </>
+  );
 }
