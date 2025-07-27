@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { FaEdit } from "react-icons/fa";
 import { useTalent } from "../../contexts/TalentContext";
+import { Button } from "./button";
 
 const educationSchema = z.object({
     educations: z.array(
@@ -116,7 +117,7 @@ export default function Step3Form({
 
         <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-2xl mt-6 space-y-6">
 
-            <h2 className="text-3xl font-semibold text-violet-900">Education</h2>
+            <h2 className="text-3xl font-semibold">Education</h2>
             {!isRegistration && (
                 <p className="text-center text-gray-600 mt-2">
                     Build your profile to discover opportunities that match your talents.
@@ -178,9 +179,10 @@ export default function Step3Form({
                                 </div>
                                 {/* Show remove button only if there is more than one education entry */}
                                 {fields.length > 1 && (
-                                    <button
+                                    <Button
+                                        variant="destructive"
                                         type="button"
-                                        className="mt-4 text-black-600 hover:text-red-800 text-sm"
+                                        className="mt-4 hover:text-red-800 text-sm"
                                         onClick={() => {
                                             remove(index);
                                             if (expandedIndex === index) {
@@ -191,7 +193,7 @@ export default function Step3Form({
                                         }}
                                     >
                                         Remove Education
-                                    </button>
+                                    </Button>
                                 )}
                             </>
                         )}
@@ -199,9 +201,9 @@ export default function Step3Form({
                 );
             })}
             {/* Add new education entry */}
-            <button
-                type="button"
-                className="flex items-center justify-center w-full border rounded-md p-2 bg-gray-100 hover:bg-gray-200"
+            <Button 
+                variant="secondary"
+                className="w-full"
                 onClick={() => {
                     const newIndex = fields.length; // לשמור את האינדקס החדש לפני ההוספה
                     append({ institution: "", degree: "", startDate: "", endDate: "", description: "" });
@@ -210,16 +212,16 @@ export default function Step3Form({
 
             >
                 + Add Another Education
-            </button>
+            </Button>
             {/* Navigation buttons */}
             <div className="flex justify-between mt-6">
-                {isRegistration && <button type="button" className="px-4 py-2 border border-gray-400 text-gray-600 rounded-md" onClick={handlePrev}>
+                {isRegistration && <Button type="button" variant="secondary" onClick={handlePrev}>
                     Prev
-                </button>
+                </Button>
                 }
-                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                <Button variant="primary" type="submit">
                     {isRegistration ? 'Next' : 'Update'}
-                </button>
+                </Button>
             </div>
         </form>
     );

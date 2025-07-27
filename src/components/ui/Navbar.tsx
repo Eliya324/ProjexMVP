@@ -13,7 +13,22 @@ export default function Navbar() {
   const pathname = usePathname();
   const links = [
     ...(isSignedIn
-      ? [{ href: "/projects/new", label: "Create a Project" }]
+      ? [
+          {
+            href: "/projects/new",
+            label: "Create a Project",
+            variant: "callToAction" as const,
+          },
+          ...(isAdmin
+            ? [
+                {
+                  href: "/admin",
+                  label: "Manage Site",
+                  variant: "outline" as const,
+                },
+              ]
+            : []),
+        ]
       : []),
   ];
 

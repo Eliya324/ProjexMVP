@@ -3,6 +3,7 @@ import { NextResponse, NextRequest } from "next/server";
 import { getAuth } from '@clerk/nextjs/server';
 import { getNeonIdFromClerkId } from "@/lib/clerkToNeon";
 import { z } from "zod";
+import { getNeonUserIdOrResponse, getUserIdOrThrow } from "@/lib/auth";
 
 const projectInclude = {
   ratings: true,
@@ -29,21 +30,6 @@ const projectSchema = z.object({
   }),
 });
 
-function getUserIdOrThrow(req: NextRequest): string {
-  const { userId } = getAuth(req);
-  if (!userId) throw new Error("Unauthorized");
-  return userId;
-}
-
-async function getNeonUserIdOrResponse(req: NextRequest): Promise<string | NextResponse> {
-  try {
-    const userId = getUserIdOrThrow(req);
-    return await getNeonIdFromClerkId(userId);
-  } catch {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  }
-}
-
 export async function POST(req: NextRequest) {
   try {
     const userId = getUserIdOrThrow(req);
@@ -54,31 +40,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: parsedData.error.errors }, { status: 400 });
     }
 
-    const {
-      title,
-      shortDescription,
-      objective,
-      requiredSkills,
-      usedTechnologies,
-      missingTalents,
-      status,
-      documentPDFs,
-      relationships,
-      posts,
-      ratings
-    } = parsedData.data;
-
-    const requiredFields = [
-      { value: title, name: "Title" },
-      { value: shortDescription, name: "Short description" },
-      { value: status, name: "Status" },
-    ];
-
-    for (const { value, name } of requiredFields) {
-      if (!value) {
-        return NextResponse.json({ message: `${name} is required` }, { status: 400 });
-      }
-    }
+    const data = parsedData.data;
 
     let neonUserId;
     try {
@@ -90,22 +52,12 @@ export async function POST(req: NextRequest) {
 
     const newProject = await prisma.project.create({
       data: {
+        ...data,
         owner: {
           connect: {
             id: neonUserId
           }
-        },
-        title,
-        shortDescription,
-        objective,
-        requiredSkills,
-        usedTechnologies,
-        missingTalents,
-        status,
-        documentPDFs,
-        relationships,
-        posts,
-        ratings,
+        }
       }
     });
 
@@ -116,6 +68,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: errorMessage }, { status: 500 });
   }
 }
+
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);

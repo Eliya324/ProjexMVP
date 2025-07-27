@@ -1,4 +1,6 @@
+"use client";
 import * as React from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import {
@@ -11,6 +13,24 @@ import {
 import ProjectCard from "./ProjectCard";
 import UserCard from "./UserCard";
 import SearchBar from "./SearchBar";
+import PostCard from "./PostCard";
+import FeedbackPopup from "@/components/ui/FeedbackPopup";
+import { useUser } from "@clerk/nextjs";
+import { date } from "zod";
+
+type Post = {
+  id: string;
+  content: string;
+  image: string;
+  createdAt: string;
+  likes: number;
+  comments: number;
+  projectTitle: string;
+  author: {
+    fullName: string;
+    profilePicture: string;
+  };
+};
 
 const developers = [
   "Front-End Developer",
@@ -50,7 +70,7 @@ const projects = Array.from({ length: 6 }).map((_, index) => ({
   image: `https://placehold.co/270x150?text=Project+${index + 1}`,
   description: `This is a description for Project ${
     index + 1
-  }. A cutting-edge solution for modern needs.`,
+    }. A cutting-edge solution for modern needs.`,
 }));
 const users = Array.from({ length: 6 }).map((_, index) => ({
   id: index,
@@ -65,12 +85,76 @@ const users = Array.from({ length: 6 }).map((_, index) => ({
 }));
 
 export default function HomePage() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { user, isLoaded } = useUser()
+  const [showPopup, setShowPopup] = useState(false);
+  const [questionId, setQuestionId] = useState<string | null>(null);
+  const [questionText, setQuestionText] = useState<string>("");
+  const [questionType, setQuestionType] = useState<"rating" | "binary">("rating");
+  useEffect(() => {
+    const checkIfAnswered = async () => {
+      const userEmail = user?.primaryEmailAddress?.emailAddress;
+      const adminEmails = process.env.NEXT_PUBLIC_ADMIN_EMAILS?.split(",").map(e => e.trim()) ?? [];
+      const isAdmin = !!userEmail && adminEmails.includes(userEmail);
+      if (isLoaded && user && questionId && !isAdmin) {
+        const res = await fetch(`/api/feedback/answered?questionId=${questionId}`);
+        const data = await res.json();
+        if (!data.answered) {
+          setShowPopup(true);
+        }
+      }
+    };
+    checkIfAnswered();
+  }, [isLoaded, user, questionId]);
+
+  useEffect(() => {
+    const fetchLatestQuestion = async () => {
+      try {
+        const res = await fetch("/api/feedback/latestQuestion");
+        if (!res.ok) return;
+        const data = await res.json();
+        setQuestionId(data.id);
+        setQuestionText(data.question);
+        setQuestionType(data.type.toLowerCase() as "rating" | "binary");
+      } catch (err) {
+        console.error("❌ Failed to fetch latest question:", err);
+      }
+    };
+    fetchLatestQuestion();
+  }, []);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const res = await fetch("/api/posts");
+        const data = await res.json();
+        setPosts(data);
+      } catch (err) {
+        console.error("❌ Failed to fetch posts:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
   return (
     <div
       className={cn(
         "h-full pt-24 flex flex-col overflow-y-auto border border-red items-center w-full relative px-4 sm:px-0"
       )}
     >
+      <>
+        {showPopup && questionId && (
+          <FeedbackPopup
+            type={questionType}
+            question={questionText}
+            questionId={questionId}
+            onClose={() => setShowPopup(false)}
+          />
+        )}
+      </>
       {/* Banner */}
       <div
         className={cn(
@@ -238,6 +322,44 @@ export default function HomePage() {
             <CarouselNext className="rotate-90 w-10 h-10" />
           </div>
         </Carousel>
+      </div>
+      {/* All Posts */}
+      <div className="relative w-[95%] max-w-[1300px] mt-6 text-left">
+        <h2 className="text-[24px] md:text-[35px] font-bold text-[#000080] font-lato">
+          All Posts
+        </h2>
+      </div>
+
+      <div className="relative w-[95%] max-w-[1300px] mx-auto mt-6">
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <Carousel className="relative w-full">
+            <CarouselContent className=" flex max-sm:flex-col max-sm:items-center max-sm:h-full sm:flex-row sm:overflow-visible scrollbar-hide sm:scrollbar-default">
+              {posts.length > 0 && posts.map((post) => (
+                <CarouselItem
+                  key={post.id}
+                  className="basis-[100%] max-sm:w-[100%] sm:basis-[50%] md:basis-[39%] lg:basis-[30%] xl:basis-1/4 flex justify-center items-center"
+                >
+                  <div className="max-sm:w-[100%] p-1 w-full flex justify-center ">
+                    <PostCard post={post} isCompact={true} />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            {/* Bottom arrow (only for small screens) */}
+            {posts.length >= 3 && (
+              <div className="absolute bottom-[-15px] left-1/2 -translate-x-1/2 max-sm:block hidden">
+                <CarouselNext className="rotate-90 w-10 h-10" />
+              </div>
+            )}
+
+            <div className="hidden sm:flex justify-between absolute top-1/2 left-0 right-0 mx-auto md:w-[90%] max-w-[95%] -translate-y-1/2">
+              <CarouselPrevious className="absolute left-0 sm:-left-7 md:-left-14 lg:-left-16 xl:-left-20 2xl:-left-24" />
+              <CarouselNext className="absolute right-0 sm:-right-7 md:-right-14 lg:-right-16 xl:-right-20 2xl:-right-24" />
+            </div>
+          </Carousel>
+        )}
       </div>
     </div>
   );

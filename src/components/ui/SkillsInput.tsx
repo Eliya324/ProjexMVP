@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/Input";
+import { Button } from "./button";
 
 interface SkillsInputProps {
   onChange: (skills: string[]) => void;
@@ -47,13 +48,14 @@ export default function SkillsInput({ onChange, defaultSkills = [] }: SkillsInpu
         {skills.map((s) => (
           <span key={s} className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full flex items-center gap-2">
             {s}
-            <button
+            <Button
               type="button"
               onClick={() => removeSkill(s)}
-              className="ml-2 text-red-500 hover:text-blue-700"
+              variant="ghost"
+              className="text-red-600 hover:text-red-800 font-bold text-base"
             >
               ✕
-            </button>
+            </Button>
           </span>
         ))}
       </div>

@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/Input";
+import { Button } from "./button";
 
 const languages = ["English", "Spanish", "Hebrew", "French", "German"];
 
@@ -85,13 +86,14 @@ export default function LanguageSelector({ onSelect, defaultLanguages = [] }: La
             className="bg-blue-100 text-blue-700 px-3 py-1 rounded-md text-sm flex items-center"
           >
             {lang}
-            <button
+            <Button
               type="button"
-              className="ml-2 text-red-500 hover:text-red-700"
+              variant="ghost"
+              className="text-red-600 hover:text-red-800 font-bold text-base"
               onClick={() => handleRemove(lang)}
             >
               ✕
-            </button>
+            </Button>
           </span>
         ))}
       </div>
