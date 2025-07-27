@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import {
   Tooltip,
   TooltipContent,
@@ -19,7 +20,7 @@ export default function IconWithTooltip({
       <Tooltip>
         <TooltipTrigger asChild>
           <span className="cursor-pointer">
-            <Icon className={className} />
+            <Icon className={cn("default-icon-class", className)} />
           </span>
         </TooltipTrigger>
         <TooltipContent className="rounded-xl bg-zinc-700 text-white text-sm px-3 py-1 shadow-lg">

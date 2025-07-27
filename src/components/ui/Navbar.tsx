@@ -45,14 +45,8 @@ export default function Navbar() {
           </div>
         )}
         {/* Right side - links, icons, profile*/}
-        <MainNav
-          links={links}
-          user={user}
-          isSignedIn={isSignedIn ?? false}
-          pathname={pathname}
-        />
+        <MainNav links={links} pathname={pathname} />
         {/* Mobile menu*/}
-
         <MobileNav links={links} />
       </nav>
     </header>
